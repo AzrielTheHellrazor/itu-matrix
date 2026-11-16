@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
+import { RoverStudio } from "@/components/rover-studio";
 
 export default function Home() {
   return (
@@ -11,23 +12,8 @@ export default function Home() {
         {/* Milestone M2: Hero Showcase Section */}
         <Hero />
 
-        {/* Anchor Placeholder: Milestone M3 3D Rover Studio */}
-        <section
-          id="rover-3d"
-          className="min-h-[400px] border-t border-white/10 bg-surface/30 flex flex-col items-center justify-center p-8 text-center"
-        >
-          <div className="max-w-2xl">
-            <span className="font-mono text-xs text-accent-cyan tracking-widest uppercase mb-2 block">
-              {"// Milestone M3 Studio"}
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-mono text-white mb-2">
-              3D Interactive Rover Studio
-            </h2>
-            <p className="text-zinc-400 text-sm font-sans">
-              Three.js procedural articulated rover model with 5 subsystem hotspots and OrbitControls.
-            </p>
-          </div>
-        </section>
+        {/* Milestone M3: 3D Interactive Rover Studio */}
+        <RoverStudio />
 
         {/* Anchor Placeholder: Milestone M4 Subteams Bento Grid */}
         <section
