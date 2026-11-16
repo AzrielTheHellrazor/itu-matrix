@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
   transpilePackages: ["three"],
   cacheComponents: true,
   partialPrefetching: true,
