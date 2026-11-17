@@ -5,6 +5,8 @@
  */
 
 import { describe, test, expect } from "bun:test";
+import React from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { existsSync, readFileSync } from "fs";
 import { parseHtml, ParsedNode } from "./helpers/dom-parser";
 import {
@@ -23,6 +25,7 @@ import {
   DARCULA_PALETTE,
   getSnippetById,
 } from "../../data/code-snippets";
+import { MotionProvider } from "../../components/motion-provider";
 import { tokenizePythonDarcula } from "../../components/pycharm-window";
 
 function collectAllNodes(node: ParsedNode, out: ParsedNode[] = []): ParsedNode[] {
@@ -267,6 +270,56 @@ describe("Tier 5: Adversarial Hardening & Deep Verification Suite", () => {
       expect(projectFileExists("app/robots.ts") || projectFileExists("public/robots.txt")).toBe(true);
       expect(projectFileExists("app/sitemap.ts") || projectFileExists("public/sitemap.xml")).toBe(true);
       expect(projectFileExists("public/og-image.png")).toBe(true);
+    });
+
+    test("T5.A10: Genuine framer-motion Integration & MotionConfig Reduced Motion", () => {
+      expect(projectFileExists("components/motion-provider.tsx")).toBe(true);
+      const providerSrc = loadProjectSource("components/motion-provider.tsx");
+      expect(providerSrc).toContain('"use client"');
+      expect(providerSrc).toContain('from "framer-motion"');
+      expect(providerSrc).toContain("MotionConfig");
+      expect(providerSrc).toContain('reducedMotion="user"');
+
+      const layoutSrc = loadProjectSource("app/layout.tsx");
+      expect(layoutSrc).toContain('from "@/components/motion-provider"');
+      expect(layoutSrc).toContain("<MotionProvider>");
+      expect(layoutSrc).toContain("</MotionProvider>");
+
+      const motionComponents = [
+        "components/navbar.tsx",
+        "components/hero.tsx",
+        "components/rover-studio.tsx",
+        "components/pycharm-window.tsx",
+        "components/subteams-bento.tsx",
+        "components/achievements-timeline.tsx",
+        "components/sponsors-footer.tsx",
+        "components/telemetry-console.tsx",
+      ];
+      for (const file of motionComponents) {
+        const src = loadProjectSource(file);
+        expect(src).toContain('from "framer-motion"');
+        expect(src).toMatch(/\bmotion\./);
+      }
+
+      const navbarSrc = loadProjectSource("components/navbar.tsx");
+      expect(navbarSrc).toContain("<AnimatePresence");
+      expect(navbarSrc).toContain('layoutId="navbar-active-pill"');
+
+      const studioSrc = loadProjectSource("components/rover-studio.tsx");
+      expect(studioSrc).toContain('<AnimatePresence mode="wait">');
+
+      const pycharmSrc = loadProjectSource("components/pycharm-window.tsx");
+      expect(pycharmSrc).toContain('<AnimatePresence mode="wait">');
+      expect(pycharmSrc).toContain('layoutId="pycharm-active-tab"');
+
+      const ssrCheck = renderToStaticMarkup(
+        React.createElement(
+          MotionProvider,
+          null,
+          React.createElement("div", { "data-motion-root": "ok" }, "ready")
+        )
+      );
+      expect(ssrCheck).toContain('data-motion-root="ok"');
     });
   });
 

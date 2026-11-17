@@ -4,7 +4,7 @@
  */
 
 import { describe, test, expect } from "bun:test";
-import { createTelemetrySession } from "./helpers/telemetry-runner";
+import { createTelemetrySession } from "../../data/telemetry-commands";
 import { loadProjectSource } from "./helpers/source-loader";
 import { extractCssVariables } from "./helpers/token-checker";
 
@@ -83,6 +83,7 @@ describe("Tier 3: Pairwise Combinatorial Interaction Suite (15 Tests)", () => {
     expect(armRes.output.some(l => l.includes("6-DOF ROBOTIC ARM"))).toBe(true);
     expect(armRes.output.some(l => l.includes("J1 Base Yaw"))).toBe(true);
     expect(armRes.output.some(l => l.includes("J6 End-Effector"))).toBe(true);
+    expect(armRes.output.some(l => l.includes("3.5kg Payload Capacity"))).toBe(true);
 
     expect(studio).toContain("\"Degrees of Freedom\": \"6-DOF\"");
     expect(studio).toContain("\"Payload Capacity\": \"3.5 kg\"");

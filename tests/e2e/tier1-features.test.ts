@@ -6,7 +6,7 @@
 import { describe, test, expect } from "bun:test";
 import { parseHtml } from "./helpers/dom-parser";
 import { auditGlobalsCss, JETBRAINS_CORE_TOKENS, DARCULA_SYNTAX_TOKENS, extractCssVariables } from "./helpers/token-checker";
-import { createTelemetrySession } from "./helpers/telemetry-runner";
+import { createTelemetrySession } from "../../data/telemetry-commands";
 import { loadProjectSource, projectFileExists, resolveProjectPath } from "./helpers/source-loader";
 import { readFileSync, existsSync } from "fs";
 import { resolve } from "path";
@@ -390,6 +390,8 @@ describe("Tier 1: Feature Coverage Suite (F1 - F14, 70 Tests)", () => {
       expect(out).toContain("telemetry");
       expect(out).toContain("arm test");
       expect(out).toContain("subsystems");
+      expect(out).toContain("science");
+      expect(out).toContain("rovers");
       expect(out).toContain("clear");
     });
 
@@ -412,6 +414,8 @@ describe("Tier 1: Feature Coverage Suite (F1 - F14, 70 Tests)", () => {
       expect(out).toContain("6-DOF ROBOTIC ARM");
       expect(out).toContain("J1 Base Yaw");
       expect(out).toContain("J6 End-Effector");
+      expect(out).toContain("3.5kg Payload Capacity");
+      expect(out).not.toContain("5.0kg");
       expect(out).toContain("NOMINAL");
     });
 

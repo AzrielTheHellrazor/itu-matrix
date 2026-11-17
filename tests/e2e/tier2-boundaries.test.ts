@@ -4,11 +4,15 @@
  */
 
 import { describe, test, expect } from "bun:test";
+import React from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { parseHtml } from "./helpers/dom-parser";
 import { computeContrastRatio, extractCssVariables } from "./helpers/token-checker";
-import { createTelemetrySession } from "./helpers/telemetry-runner";
+import { createTelemetrySession } from "../../data/telemetry-commands";
+import { tokenizePythonDarcula, PyCharmWindow } from "../../components/pycharm-window";
+import { CODE_SNIPPETS, DARCULA_PALETTE } from "../../data/code-snippets";
 import { loadProjectSource, projectFileExists, resolveProjectPath } from "./helpers/source-loader";
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { resolve } from "path";
 
 describe("Tier 2: Boundary Value & Corner Cases Suite (F1 - F14, 70 Tests)", () => {
@@ -274,24 +278,38 @@ describe("Tier 2: Boundary Value & Corner Cases Suite (F1 - F14, 70 Tests)", () 
       expect(studio).toContain("setActiveHotspot(null)");
     });
 
-    test("T2.F7.02: Wireframe Toggle 10x Rapid Click State Invariant", () => {
+    test("T2.F7.02: Wireframe Toggle Functional Updater, Exhaustive Material Binding & SSR State", () => {
       const studioSrc = loadProjectSource("components/rover-studio.tsx");
       const roverSrc = loadProjectSource("components/procedural-rover.tsx");
 
-      expect(studioSrc).toMatch(/const\s+\[(?:wireframe|isWireframe),\s*set(?:Wireframe|IsWireframe)\]\s*=\s*useState/);
-      expect(studioSrc).toMatch(/set(?:Wireframe|IsWireframe)\s*\(\s*(?:prev\s*=>\s*!prev|!(?:wireframe|isWireframe))\s*\)/);
-      expect(studioSrc).toMatch(/<ProceduralRover[^>]*(?:wireframe|isWireframe)=\{/);
+      // 1. Functional state updater prevents lost transitions on rapid clicks
+      expect(studioSrc).toContain("const [isWireframe, setIsWireframe] = useState<boolean>(false)");
+      expect(studioSrc).toMatch(/setIsWireframe\s*\(\s*prev\s*=>\s*!prev\s*\)/);
+      expect(studioSrc).toContain('{isWireframe ? "Wireframe: ON" : "Wireframe: OFF"}');
+      expect(studioSrc).toMatch(/<RoverCanvas[\s\S]*?isWireframe=\{isWireframe\}/);
+      expect(studioSrc).toMatch(/<ProceduralRover[\s\S]*?isWireframe=\{isWireframe\}/);
 
-      expect(roverSrc).toMatch(/wireframe:\s*(?:wireframe|isWireframe)|wireframe=\{(?:wireframe|isWireframe)\}/);
+      // 2. Prop normalization & material helper in ProceduralRover
+      expect(roverSrc).toContain("Boolean(propIsWireframe ?? propWireframe)");
+      expect(roverSrc).toMatch(/pbrMaterialProps\s*=\s*\{[\s\S]*?wireframe:\s*isWireframe/);
 
-      const stateReducer = (s: boolean) => !s;
-      let currentState = false;
-      for (let i = 0; i < 10; i++) {
-        currentState = stateReducer(currentState);
+      // 3. Every single <meshStandardMaterial> in ProceduralRover must bind wireframe state
+      const materials = [...roverSrc.matchAll(/<meshStandardMaterial\b[\s\S]*?\/>/g)].map(m => m[0]);
+      expect(materials.length).toBeGreaterThanOrEqual(40);
+      const unwiredMaterials = materials.filter(
+        m => !m.includes("...pbrMaterialProps") && !/wireframe=\{isWireframe\}/.test(m)
+      );
+      expect(unwiredMaterials).toEqual([]);
+
+      // 4. Built SSR DOM renders initial wireframe-toggle state cleanly
+      const htmlPath = resolveProjectPath(".next/server/app/index.html");
+      if (existsSync(htmlPath)) {
+        const dom = parseHtml(readFileSync(htmlPath, "utf-8"));
+        const toggleBtn = dom.findByTestId("wireframe-toggle");
+        expect(toggleBtn).not.toBeNull();
+        expect(toggleBtn?.getAttribute("type")).toBe("button");
+        expect(toggleBtn?.textContent).toContain("Wireframe: OFF");
       }
-      expect(currentState).toBe(false);
-      currentState = stateReducer(currentState);
-      expect(currentState).toBe(true);
     });
 
     test("T2.F7.03: Hotspot Deselection & Camera Reset", () => {
@@ -361,7 +379,46 @@ describe("Tier 2: Boundary Value & Corner Cases Suite (F1 - F14, 70 Tests)", () 
 
     test("T2.F8.04: Clean Code Formatting Without HTML Tags", () => {
       const ide = loadProjectSource("components/pycharm-window.tsx");
-      expect(ide).toContain("<code>{activeTab.code}</code>");
+      expect(ide).not.toContain("E2E Test Contract");
+      expect(ide).not.toContain("dangerouslySetInnerHTML");
+      expect(ide).toContain("highlightedTokens.map(");
+
+      const paletteColors = new Set<string>(Object.values(DARCULA_PALETTE));
+      for (const snippet of CODE_SNIPPETS) {
+        const tokens = tokenizePythonDarcula(snippet.code);
+        expect(tokens.length).toBeGreaterThan(0);
+        expect(tokens.map(t => t.text).join("")).toBe(snippet.code);
+        for (const token of tokens) {
+          expect(paletteColors.has(token.color)).toBe(true);
+        }
+      }
+
+      // Verify Darcula tokenization and SSR rendering escape HTML-like characters without injecting raw tags
+      const xssSnippet = {
+        ...CODE_SNIPPETS[0],
+        code: 'if x < 1 and y > 0:\n    html = "<script>alert(1)</script>"',
+      };
+      const html = renderToStaticMarkup(
+        React.createElement(PyCharmWindow, { snippets: [xssSnippet] })
+      );
+      const codeMatch = html.match(/<pre[^>]*><code>([\s\S]*?)<\/code><\/pre>/);
+      expect(codeMatch).not.toBeNull();
+      const innerCodeHtml = codeMatch![1];
+
+      // Only safe <span style="color:#..."> wrappers appear inside <code>; <script> is entity-escaped
+      expect(innerCodeHtml).not.toContain("<script>");
+      expect(innerCodeHtml).toContain("&lt;script&gt;");
+      expect(innerCodeHtml).toContain(`style="color:${DARCULA_PALETTE.keyword}"`);
+
+      // Stripping Darcula <span> wrappers and decoding HTML entities reproduces exact Python source
+      const plainRendered = innerCodeHtml
+        .replace(/<\/?span(?:\s+style="color:#[0-9A-Fa-f]{6}")?>/g, "")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"')
+        .replace(/&#x27;/g, "'")
+        .replace(/&amp;/g, "&");
+      expect(plainRendered).toBe(xssSnippet.code);
     });
 
     test("T2.F8.05: Stdout Terminal Buffer Overflow Clamping", () => {
@@ -383,6 +440,11 @@ describe("Tier 2: Boundary Value & Corner Cases Suite (F1 - F14, 70 Tests)", () 
       const spaceRes = session.execute("    ");
       expect(spaceRes.status).toBe("success");
       expect(spaceRes.output.length).toBe(0);
+
+      const nonStringRes = session.execute(null as unknown as string);
+      expect(nonStringRes.status).toBe("success");
+      expect(nonStringRes.output.length).toBe(0);
+      expect(session.getHistory().length).toBe(0);
     });
 
     test("T2.F9.02: Unknown Command Helpful Error Handling", () => {
@@ -410,6 +472,8 @@ describe("Tier 2: Boundary Value & Corner Cases Suite (F1 - F14, 70 Tests)", () 
       expect(session.getPreviousCommand(0)).toBe("arm test");
       expect(session.getPreviousCommand(1)).toBe("telemetry");
       expect(session.getPreviousCommand(5)).toBeNull();
+      expect(session.getPreviousCommand(-1)).toBeNull();
+      expect(session.getPreviousCommand(0.5)).toBeNull();
     });
 
     test("T2.F9.05: Case-Insensitive Command Execution with Whitespace Trimming", () => {
@@ -602,21 +666,53 @@ describe("Tier 2: Boundary Value & Corner Cases Suite (F1 - F14, 70 Tests)", () 
       expect(tsconfig.compilerOptions.noEmit).toBe(true);
     });
 
-    test("T2.F14.04: Bun Test Runner Timeout Boundary Handling", async () => {
-      const runWithTimeout = async <T>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
-        let timer: ReturnType<typeof setTimeout>;
-        const timeoutPromise = new Promise<never>((_, reject) => {
-          timer = setTimeout(() => reject(new Error(`Timeout boundary exceeded: ${timeoutMs}ms`)), timeoutMs);
-        });
-        return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timer));
-      };
+    test("T2.F14.04: Production Parser/Telemetry Latency SLA, Timer Cleanup & TypeScript Gate Timeout", async () => {
+      // 1. Real TelemetrySession completes all commands + 50KB adversarial input within 50ms
+      const session = createTelemetrySession();
+      const t0 = performance.now();
+      for (const cmd of ["help", "telemetry", "arm test", "subsystems", "science", "rovers", "clear"]) {
+        session.execute(cmd);
+      }
+      const hugeRes = session.execute("x ".repeat(25000));
+      expect(hugeRes.status).toBe("error");
+      expect(performance.now() - t0).toBeLessThan(50);
 
-      const fastTask = new Promise<string>(resolve => setTimeout(() => resolve("fast_ok"), 30));
-      const fastResult = await runWithTimeout(fastTask, 300);
-      expect(fastResult).toBe("fast_ok");
+      // 2. Real Darcula tokenizer scans all snippets + 10KB adversarial code within 100ms
+      const t1 = performance.now();
+      for (const snippet of CODE_SNIPPETS) {
+        const tokens = tokenizePythonDarcula(snippet.code);
+        expect(tokens.map(t => t.text).join("")).toBe(snippet.code);
+      }
+      const adversarialCode = ('def fn_1(x="unterminated):\n    # comment\n    return 3.14e-2\n').repeat(150);
+      const advTokens = tokenizePythonDarcula(adversarialCode);
+      expect(advTokens.map(t => t.text).join("")).toBe(adversarialCode);
+      expect(performance.now() - t1).toBeLessThan(100);
 
-      const slowTask = new Promise<string>(resolve => setTimeout(() => resolve("slow_ok"), 120));
-      expect(runWithTimeout(slowTask, 30)).rejects.toThrow("Timeout boundary exceeded: 30ms");
+      // 3. PyCharmWindow cleans up simulation interval, copy timeout & clipboard rejections
+      const ide = loadProjectSource("components/pycharm-window.tsx");
+      expect(ide).toContain("clearInterval(intervalRef.current)");
+      expect(ide).toContain("clearTimeout(copyTimeoutRef.current)");
+      expect(ide).toMatch(/try\s*\{[\s\S]*?await navigator\.clipboard\.writeText\(currentCode\)[\s\S]*?\}\s*catch\s*\{[\s\S]*?setCopied\(false\)/);
+
+      // 4. Real TypeScript validation gate completes under a hard 15s subprocess timeout
+      const proc = Bun.spawn(["bunx", "tsc", "--noEmit"], {
+        cwd: resolveProjectPath("."),
+        stdout: "pipe",
+        stderr: "pipe",
+      });
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timer = setTimeout(() => {
+          proc.kill();
+          reject(new Error("tsc --noEmit exceeded 15000ms gate timeout"));
+        }, 15000);
+      });
+      try {
+        const exitCode = await Promise.race([proc.exited, timeoutPromise]);
+        expect(exitCode).toBe(0);
+      } finally {
+        if (timer) clearTimeout(timer);
+      }
     });
 
     test("T2.F14.05: Total Test Suite Pass Invariant (140+ Tests)", () => {
