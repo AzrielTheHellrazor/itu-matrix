@@ -139,8 +139,8 @@ describe("Tier 4: Multi-Step User Journeys & Build/Type/Lint Gates", () => {
         assert: (s) => {
           expect(s.dom?.findByTestId("achievements-section")).not.toBeNull();
           expect(s.dom?.findByTestId("minimal-footer")).not.toBeNull();
-          expect(s.renderedHtml).toContain(CLUB_INFO.institutionUrl);
-          expect(s.renderedHtml).toContain(CLUB_INFO.departmentUrl);
+          expect(s.renderedHtml).toContain("Istanbul Technical University");
+          expect(s.renderedHtml).toContain("Ayazağa Campus, Maslak, Istanbul");
           expect(s.renderedHtml).toContain("1773");
           expect(s.renderedHtml).toContain("1961–1962");
         },

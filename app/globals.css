@@ -28,6 +28,88 @@
   --glass-fill: rgba(11, 11, 14, 0.85);
 }
 
+html.light {
+  color-scheme: light;
+  --bg-canvas: #F8F9FB;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #F1F3F6;
+  --bg-surface-hover: #E8EBF0;
+
+  --accent-cyan: #0284C7;
+  --accent-purple: #7C3AED;
+  --accent-amber: #D97706;
+
+  --text-primary: #111115;
+  --text-secondary: #52525B;
+  --text-muted: #71717A;
+
+  --border-subtle: rgba(17, 17, 21, 0.09);
+  --border-active: rgba(17, 17, 21, 0.22);
+  --glass-fill: rgba(248, 249, 251, 0.88);
+}
+
+/* Light-mode utility overrides for dark-first Tailwind classes */
+html.light .bg-canvas {
+  background-color: var(--bg-canvas) !important;
+}
+html.light .bg-surface,
+html.light .bg-surface\/60 {
+  background-color: var(--bg-surface) !important;
+}
+html.light .bg-\[\#0B0B0E\]\/85,
+html.light .bg-\[\#0B0B0E\]\/80,
+html.light .bg-\[\#0B0B0E\]\/95 {
+  background-color: var(--glass-fill) !important;
+}
+html.light .text-zinc-100 {
+  color: #111115 !important;
+}
+html.light .text-zinc-200 {
+  color: #27272A !important;
+}
+html.light .text-zinc-300 {
+  color: #3F3F46 !important;
+}
+html.light .text-zinc-400 {
+  color: #52525B !important;
+}
+html.light .bg-zinc-100 {
+  background-color: #111115 !important;
+  color: #FFFFFF !important;
+}
+html.light .bg-zinc-100:hover {
+  background-color: #27272A !important;
+}
+html.light .border-white\/\[0\.08\],
+html.light .border-white\/\[0\.1\],
+html.light .border-white\/\[0\.12\],
+html.light .border-white\/\[0\.14\],
+html.light .border-white\/\[0\.16\] {
+  border-color: var(--border-subtle) !important;
+}
+html.light .hover\:border-white\/\[0\.18\]:hover,
+html.light .hover\:border-white\/\[0\.22\]:hover,
+html.light .hover\:border-white\/\[0\.24\]:hover {
+  border-color: var(--border-active) !important;
+}
+html.light .bg-white\/\[0\.06\],
+html.light .bg-white\/\[0\.1\],
+html.light .hover\:bg-white\/\[0\.06\]:hover {
+  background-color: rgba(17, 17, 21, 0.06) !important;
+}
+html.light .hover\:text-white:hover {
+  color: #111115 !important;
+}
+html.light ::-webkit-scrollbar-track {
+  background: #F8F9FB;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: #D4D4D8;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #A1A1AA;
+}
+
 @theme {
   --color-canvas: #0B0B0E;
   --color-bg-canvas: #0B0B0E;

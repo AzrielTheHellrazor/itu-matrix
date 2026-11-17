@@ -179,7 +179,8 @@ describe("Tier 3: Built SSR HTML, React SSR Markup, 3D Lattice Math & WebGL Safe
     expect(html).toContain("1961–1962");
     expect(html).toContain("1982");
     expect(html).toContain("1998");
-    expect(html).toContain("https://mme.itu.edu.tr");
+    expect(html).toContain("Istanbul Technical University");
+    expect(html).toContain("Ayazağa Campus, Maslak, Istanbul");
   });
 
   test("T3.07: getLatticeGeometry('BCC') returns 9 finite atoms (8 host + 1 center solute) and 20 edges", () => {

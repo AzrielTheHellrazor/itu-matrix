@@ -2,9 +2,13 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { CLUB_INFO } from "@/data/materials-data";
+import { useSitePreferences } from "@/components/site-preferences";
+import { TRANSLATIONS } from "@/data/i18n";
 
 export function MinimalFooter() {
+  const { lang } = useSitePreferences();
+  const t = TRANSLATIONS[lang].footer;
+
   return (
     <footer
       id="partners"
@@ -21,22 +25,20 @@ export function MinimalFooter() {
         >
           <div className="lg:col-span-12">
             <p className="font-mono text-xs tracking-[0.14em] uppercase text-zinc-400 mb-3">
-              Academic Affiliation &amp; Sponsorship Inquiry
+              {t.eyebrow}
             </p>
             <h2 className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em] text-zinc-100 mb-3">
-              Partner with ITU Matrix
+              {t.title}
             </h2>
             <p className="text-sm text-zinc-400 leading-relaxed max-w-xl">
-              Operating within the academic ecosystem of {CLUB_INFO.institution}{" "}
-              ({CLUB_INFO.institutionShort}, est. {CLUB_INFO.foundedUniversity})
-              — {CLUB_INFO.faculty}, {CLUB_INFO.department}, {CLUB_INFO.campus}.
+              {t.description}
             </p>
           </div>
         </motion.div>
 
         <div className="pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono text-zinc-400">
-          <span>ITU Matrix — Metallurgy &amp; Materials Science</span>
-          <span>{CLUB_INFO.campus}</span>
+          <span>{t.brandLine}</span>
+          <span>{t.campus}</span>
         </div>
       </div>
     </footer>

@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { Pause, Play, RotateCcw } from "lucide-react";
+import { useSitePreferences } from "@/components/site-preferences";
+import { TRANSLATIONS } from "@/data/i18n";
 import {
   LATTICE_SPECS,
   getLatticeSpec,
@@ -32,6 +34,8 @@ export function Hero() {
   const [activeLattice, setActiveLattice] = useState<LatticeSystem>("BCC");
   const [resetNonce, setResetNonce] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
+  const { lang } = useSitePreferences();
+  const t = TRANSLATIONS[lang].hero;
 
   const currentSpec = getLatticeSpec(activeLattice);
 
@@ -55,17 +59,15 @@ export function Hero() {
                 aria-hidden="true"
                 className="h-1.5 w-1.5 rounded-full bg-accent-cyan"
               />
-              <span>İTÜ · Metallurgy &amp; Materials Science</span>
+              <span>{t.eyebrow}</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl font-bold tracking-[-0.03em] leading-[1.08] text-zinc-100 mb-5">
-              Engineering Matter from Atomic Lattice to Structural Performance
+              {t.headline}
             </h1>
 
             <p className="text-base text-zinc-400 leading-relaxed max-w-md mb-8">
-              ITU Matrix is a student-led metallurgy and materials science team
-              at Istanbul Technical University advancing alloy design, composite
-              matrices, and microstructural characterization.
+              {t.subcopy}
             </p>
 
             <div className="flex flex-wrap items-center gap-3">
@@ -74,14 +76,14 @@ export function Hero() {
                 data-testid="hero-cta-research"
                 className="inline-flex items-center justify-center min-h-[44px] px-5 py-2.5 rounded-md bg-zinc-100 text-[#0B0B0E] text-sm font-medium hover:bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
               >
-                Explore Research
+                {t.ctaResearch}
               </a>
               <a
                 href="#subteams"
                 data-testid="hero-cta-subteams"
                 className="inline-flex items-center justify-center min-h-[44px] px-5 py-2.5 rounded-md border border-white/[0.12] bg-surface text-sm font-medium text-zinc-200 hover:border-white/[0.24] hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
               >
-                View Divisions
+                {t.ctaSubteams}
               </a>
             </div>
           </motion.div>
@@ -150,7 +152,7 @@ export function Hero() {
                   type="button"
                   data-testid="lattice-reset-btn"
                   onClick={() => setResetNonce((n) => n + 1)}
-                  aria-label="Reset 3D lattice camera"
+                  aria-label={t.resetCamera}
                   className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-md border border-white/[0.1] bg-[#0B0B0E]/85 backdrop-blur-md text-zinc-300 hover:text-white hover:border-white/[0.22] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -161,7 +163,7 @@ export function Hero() {
                   data-testid="lattice-pause-btn"
                   aria-pressed={isPaused}
                   onClick={() => setIsPaused((p) => !p)}
-                  aria-label={isPaused ? "Resume lattice rotation" : "Pause lattice rotation"}
+                  aria-label={isPaused ? t.resumeRotation : t.pauseRotation}
                   className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-md border border-white/[0.1] bg-[#0B0B0E]/85 backdrop-blur-md text-zinc-300 hover:text-white hover:border-white/[0.22] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
                 >
                   {isPaused ? (

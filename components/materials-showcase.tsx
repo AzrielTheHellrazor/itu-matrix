@@ -2,7 +2,9 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { RESEARCH_PROJECTS, type ResearchProject } from "@/data/materials-data";
+import { useSitePreferences } from "@/components/site-preferences";
+import { TRANSLATIONS } from "@/data/i18n";
+import type { ResearchProject } from "@/data/materials-data";
 
 const ACCENT_DOT: Record<ResearchProject["accent"], string> = {
   cyan: "bg-accent-cyan",
@@ -11,6 +13,9 @@ const ACCENT_DOT: Record<ResearchProject["accent"], string> = {
 };
 
 export function MaterialsShowcase() {
+  const { lang } = useSitePreferences();
+  const t = TRANSLATIONS[lang].research;
+
   return (
     <section
       id="research"
@@ -26,19 +31,18 @@ export function MaterialsShowcase() {
           className="max-w-2xl mb-14"
         >
           <p className="font-mono text-xs tracking-[0.14em] uppercase text-zinc-400 mb-3">
-            Materials Research
+            {t.eyebrow}
           </p>
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.025em] text-zinc-100 mb-4">
-            Structure, Processing, and Property Correlation
+            {t.title}
           </h2>
           <p className="text-base text-zinc-400 leading-relaxed">
-            Four focused materials engineering tracks linking thermodynamic
-            alloy design with laboratory characterization at İTÜ.
+            {t.subtitle}
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {RESEARCH_PROJECTS.map((project, idx) => (
+          {t.projects.map((project, idx) => (
             <motion.article
               key={project.id}
               data-testid={`research-card-${project.code}`}

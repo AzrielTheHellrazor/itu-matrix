@@ -132,9 +132,12 @@ describe("Tier 2: Obsidian Design Tokens, Contrast, Motion & Accessibility", () 
     expect(nav).toContain("prefers-reduced-motion: reduce");
     expect(nav).toContain('targetEl.scrollIntoView({ behavior, block: "start" })');
 
-    for (const href of ["#overview", "#research", "#subteams", "#achievements", "#partners"]) {
-      expect(nav).toContain(`handleMobileAnchorClick(e, "${href}"`);
+    for (const href of ["#research", "#subteams", "#achievements", "#partners"]) {
+      expect(nav).toContain(`href: "${href}"`);
     }
+    expect(nav).toContain('handleMobileAnchorClick(e, "#overview")');
+    expect(nav).toContain('data-testid="lang-toggle"');
+    expect(nav).toContain('data-testid="theme-toggle"');
   });
 
   test("T2.08: Focus rings and touch targets meet accessibility minimums across interactive elements", () => {
@@ -177,12 +180,11 @@ describe("Tier 2: Obsidian Design Tokens, Contrast, Motion & Accessibility", () 
     expect(layout).toContain("overflow-x-clip");
   });
 
-  test("T2.11: External links in MinimalFooter enforce HTTPS and noopener noreferrer", () => {
+  test("T2.11: MinimalFooter renders clean academic affiliation without unrequested portal links", () => {
     const footer = loadProjectSource("components/minimal-footer.tsx");
-    expect(footer).toContain('target="_blank"');
-    expect(footer).toContain('rel="noopener noreferrer"');
-    expect(footer).toContain("CLUB_INFO.institutionUrl");
-    expect(footer).toContain("CLUB_INFO.departmentUrl");
+    expect(footer).toContain('data-testid="minimal-footer"');
+    expect(footer).not.toContain("İTÜ Portal");
+    expect(footer).not.toContain("footer-mme-link");
   });
 
   test("T2.12: Horizontal overflow containment is enforced in globals.css and RootLayout", () => {

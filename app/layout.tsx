@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { MotionProvider } from "@/components/motion-provider";
+import { SitePreferencesProvider } from "@/components/site-preferences";
 import { Navbar } from "@/components/navbar";
 import { MinimalFooter } from "@/components/minimal-footer";
 import "./globals.css";
@@ -83,13 +84,15 @@ export default function RootLayout({
         className={`${plusJakarta.variable} ${jetbrainsMono.variable} min-h-screen bg-canvas text-zinc-100 antialiased overflow-x-clip selection:bg-accent-cyan selection:text-black`}
       >
         <div className="flex min-h-screen flex-col w-full overflow-x-clip">
-          <MotionProvider>
-            <Navbar />
-            <main className="flex-1 w-full flex flex-col">
-              {children}
-            </main>
-            <MinimalFooter />
-          </MotionProvider>
+          <SitePreferencesProvider>
+            <MotionProvider>
+              <Navbar />
+              <main className="flex-1 w-full flex flex-col">
+                {children}
+              </main>
+              <MinimalFooter />
+            </MotionProvider>
+          </SitePreferencesProvider>
         </div>
       </body>
     </html>

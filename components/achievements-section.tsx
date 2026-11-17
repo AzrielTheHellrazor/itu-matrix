@@ -2,9 +2,13 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { HERITAGE_MILESTONES, LAB_FOCUS_AREAS } from "@/data/materials-data";
+import { useSitePreferences } from "@/components/site-preferences";
+import { TRANSLATIONS } from "@/data/i18n";
 
 export function AchievementsSection() {
+  const { lang } = useSitePreferences();
+  const t = TRANSLATIONS[lang].achievements;
+
   return (
     <section
       id="achievements"
@@ -20,19 +24,18 @@ export function AchievementsSection() {
           className="max-w-2xl mb-12"
         >
           <p className="font-mono text-xs tracking-[0.14em] uppercase text-zinc-400 mb-3">
-            Institutional Heritage
+            {t.eyebrow}
           </p>
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.025em] text-zinc-100 mb-4">
-            Grounded in İTÜ Metallurgy Tradition
+            {t.title}
           </h2>
           <p className="text-base text-zinc-400 leading-relaxed">
-            Built within Turkey&apos;s oldest engineering university and its
-            pioneering Department of Metallurgical and Materials Engineering.
+            {t.subtitle}
           </p>
         </motion.div>
 
         <div className="border-t border-white/[0.08]">
-          {HERITAGE_MILESTONES.map((item, idx) => (
+          {t.milestones.map((item, idx) => (
             <motion.div
               key={item.id}
               data-testid={`heritage-row-${item.id}`}
@@ -63,10 +66,10 @@ export function AchievementsSection() {
         {/* Verified Departmental Research Focus Areas */}
         <div className="mt-12">
           <div className="font-mono text-xs tracking-[0.14em] uppercase text-zinc-400 mb-4">
-            Departmental Laboratory Domains
+            {t.labDomainsLabel}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {LAB_FOCUS_AREAS.map((area) => (
+            {t.labAreas.map((area) => (
               <div
                 key={area.id}
                 data-testid={`lab-area-card-${area.id}`}

@@ -2,9 +2,13 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { SUBTEAMS } from "@/data/materials-data";
+import { useSitePreferences } from "@/components/site-preferences";
+import { TRANSLATIONS } from "@/data/i18n";
 
 export function SubteamsGrid() {
+  const { lang } = useSitePreferences();
+  const t = TRANSLATIONS[lang].subteams;
+
   return (
     <section
       id="subteams"
@@ -20,19 +24,18 @@ export function SubteamsGrid() {
           className="max-w-2xl mb-14"
         >
           <p className="font-mono text-xs tracking-[0.14em] uppercase text-zinc-400 mb-3">
-            Technical Divisions
+            {t.eyebrow}
           </p>
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.025em] text-zinc-100 mb-4">
-            Five Specialized Engineering Groups
+            {t.title}
           </h2>
           <p className="text-base text-zinc-400 leading-relaxed">
-            Organized across metallurgical synthesis, composite manufacturing,
-            ceramic sintering, microscopy, and academic operations.
+            {t.subtitle}
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {SUBTEAMS.map((division, idx) => (
+          {t.divisions.map((division, idx) => (
             <motion.article
               key={division.id}
               data-testid={`subteam-card-${division.id}`}

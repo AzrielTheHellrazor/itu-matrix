@@ -37,7 +37,9 @@ export function extractCssVariables(cssContent: string): Map<string, string> {
   while ((match = varRegex.exec(cssContent)) !== null) {
     const key = match[1].trim();
     const val = match[2].trim().toLowerCase();
-    vars.set(key, val);
+    if (!vars.has(key)) {
+      vars.set(key, val);
+    }
   }
 
   return vars;

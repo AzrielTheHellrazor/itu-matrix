@@ -3,23 +3,27 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, Moon, Sun, X } from "lucide-react";
+import { useSitePreferences } from "@/components/site-preferences";
+import { TRANSLATIONS } from "@/data/i18n";
 
 export interface NavbarProps {
   className?: string;
 }
 
-const NAV_LINKS = [
-  { href: "#research", label: "Research" },
-  { href: "#subteams", label: "Subteams" },
-  { href: "#achievements", label: "Achievements" },
-  { href: "#partners", label: "Partners" },
-] as const;
-
 export function Navbar({ className = "" }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeHref, setActiveHref] = useState<string>("#research");
   const pendingScrollIdRef = useRef<string | null>(null);
+  const { lang, setLang, theme, toggleTheme } = useSitePreferences();
+  const t = TRANSLATIONS[lang].nav;
+
+  const navLinks = [
+    { href: "#research", label: t.research },
+    { href: "#subteams", label: t.subteams },
+    { href: "#achievements", label: t.achievements },
+    { href: "#partners", label: t.partners },
+  ];
 
   useEffect(() => {
     if (!isOpen) return;
@@ -65,6 +69,60 @@ export function Navbar({ className = "" }: NavbarProps) {
     targetEl.scrollIntoView({ behavior, block: "start" });
   };
 
+  const controls = (
+    <div className="flex items-center gap-2">
+      {/* TR / EN Language Switcher */}
+      <div
+        role="group"
+        aria-label="Language selector"
+        data-testid="lang-toggle"
+        className="inline-flex items-center p-0.5 rounded-md border border-white/[0.12] bg-surface"
+      >
+        <button
+          type="button"
+          data-testid="lang-toggle-tr"
+          aria-pressed={lang === "tr"}
+          onClick={() => setLang("tr")}
+          className={`min-h-[30px] px-2.5 py-1 rounded text-xs font-mono font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan ${
+            lang === "tr"
+              ? "bg-white/[0.1] text-zinc-100"
+              : "text-zinc-400 hover:text-zinc-200"
+          }`}
+        >
+          TR
+        </button>
+        <button
+          type="button"
+          data-testid="lang-toggle-en"
+          aria-pressed={lang === "en"}
+          onClick={() => setLang("en")}
+          className={`min-h-[30px] px-2.5 py-1 rounded text-xs font-mono font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan ${
+            lang === "en"
+              ? "bg-white/[0.1] text-zinc-100"
+              : "text-zinc-400 hover:text-zinc-200"
+          }`}
+        >
+          EN
+        </button>
+      </div>
+
+      {/* Light / Dark Theme Toggle */}
+      <button
+        type="button"
+        data-testid="theme-toggle"
+        onClick={toggleTheme}
+        aria-label={theme === "dark" ? t.switchToLight : t.switchToDark}
+        className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-md border border-white/[0.12] bg-surface text-zinc-200 hover:border-white/[0.24] hover:text-white transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+      >
+        {theme === "dark" ? (
+          <Sun className="w-4 h-4" />
+        ) : (
+          <Moon className="w-4 h-4" />
+        )}
+      </button>
+    </div>
+  );
+
   return (
     <header
       data-testid="matrix-navbar"
@@ -85,7 +143,7 @@ export function Navbar({ className = "" }: NavbarProps) {
         >
           <span
             aria-hidden="true"
-            className="h-8 w-8 rounded-md border border-white/[0.14] bg-surface flex items-center justify-center"
+            className="h-8 w-8 rounded-md border border-white/[0.14] bg-surface text-zinc-100 flex items-center justify-center"
           >
             <svg
               width="16"
@@ -96,7 +154,7 @@ export function Navbar({ className = "" }: NavbarProps) {
             >
               <path
                 d="M2.5 13V3L8 8.5L13.5 3V13"
-                stroke="#F4F4F5"
+                stroke="currentColor"
                 strokeWidth="1.75"
                 strokeLinecap="square"
                 strokeLinejoin="miter"
@@ -109,7 +167,7 @@ export function Navbar({ className = "" }: NavbarProps) {
               ITU MATRIX
             </span>
             <span className="font-mono text-[10px] tracking-[0.16em] text-zinc-400 uppercase whitespace-nowrap">
-              Materials Science
+              {t.subtitle}
             </span>
           </span>
         </Link>
@@ -119,7 +177,7 @@ export function Navbar({ className = "" }: NavbarProps) {
           aria-label="Primary Navigation"
           className="hidden md:flex flex-wrap items-center justify-center min-w-0 gap-1"
         >
-          {NAV_LINKS.map((link) => {
+          {navLinks.map((link) => {
             const isActive = activeHref === link.href;
             return (
               <a
@@ -141,20 +199,14 @@ export function Navbar({ className = "" }: NavbarProps) {
           })}
         </nav>
 
-        {/* Desktop Right Action */}
+        {/* Desktop Right Controls (TR/EN + Theme) */}
         <div className="hidden md:flex items-center shrink-0">
-          <a
-            href="#partners"
-            data-testid="header-cta-partners"
-            onClick={() => setActiveHref("#partners")}
-            className="inline-flex items-center justify-center min-h-[36px] px-3.5 py-1.5 rounded-md border border-white/[0.12] bg-surface text-xs font-mono font-medium text-zinc-200 hover:border-white/[0.24] hover:text-white transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
-          >
-            Partner Inquiry
-          </a>
+          {controls}
         </div>
 
-        {/* Mobile Hamburger */}
-        <div className="flex md:hidden items-center">
+        {/* Mobile Controls & Hamburger */}
+        <div className="flex md:hidden items-center gap-2">
+          {controls}
           <button
             type="button"
             data-testid="mobile-menu-button"
@@ -162,7 +214,7 @@ export function Navbar({ className = "" }: NavbarProps) {
             aria-controls="mobile-nav-drawer"
             onClick={() => setIsOpen(!isOpen)}
             className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md text-zinc-300 hover:text-white hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
-            aria-label="Toggle navigation menu"
+            aria-label={t.toggleMenu}
           >
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -191,36 +243,18 @@ export function Navbar({ className = "" }: NavbarProps) {
                 onClick={(e) => handleMobileAnchorClick(e, "#overview")}
                 className="min-h-[44px] px-3 py-2.5 flex items-center rounded-md font-mono text-xs text-zinc-200 hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
               >
-                Overview
+                {t.overview}
               </a>
-              <a
-                href="#research"
-                onClick={(e) => handleMobileAnchorClick(e, "#research")}
-                className="min-h-[44px] px-3 py-2.5 flex items-center rounded-md font-mono text-xs text-zinc-200 hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
-              >
-                Research
-              </a>
-              <a
-                href="#subteams"
-                onClick={(e) => handleMobileAnchorClick(e, "#subteams")}
-                className="min-h-[44px] px-3 py-2.5 flex items-center rounded-md font-mono text-xs text-zinc-200 hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
-              >
-                Subteams
-              </a>
-              <a
-                href="#achievements"
-                onClick={(e) => handleMobileAnchorClick(e, "#achievements")}
-                className="min-h-[44px] px-3 py-2.5 flex items-center rounded-md font-mono text-xs text-zinc-200 hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
-              >
-                Achievements
-              </a>
-              <a
-                href="#partners"
-                onClick={(e) => handleMobileAnchorClick(e, "#partners")}
-                className="min-h-[44px] px-3 py-2.5 flex items-center rounded-md font-mono text-xs text-zinc-200 hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
-              >
-                Partners
-              </a>
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={(e) => handleMobileAnchorClick(e, link.href)}
+                  className="min-h-[44px] px-3 py-2.5 flex items-center rounded-md font-mono text-xs text-zinc-200 hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+                >
+                  {link.label}
+                </a>
+              ))}
             </div>
           </motion.div>
         )}
