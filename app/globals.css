@@ -1,64 +1,48 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   JetBrains PyCharm Design System Tokens & Darcula Syntax Palette
-   ITU Matrix Autonomous Planetary Rover Showcase
+   JetBrains PyCharm Visual Aesthetic — Obsidian Palette & Typography
+   ITU Matrix Metallurgy & Materials Science Showcase
    ========================================================================== */
 
 :root {
   /* Canvas & Surface Ramp */
   --bg-canvas: #0B0B0E;
-  --bg-surface: #151518;
-  --bg-surface-elevated: #19191C;
-  --bg-surface-hover: #212126;
-  --bg-toolbar: #26262B;
+  --bg-surface: #111115;
+  --bg-surface-elevated: #17171C;
+  --bg-surface-hover: #1D1D24;
 
-  /* JetBrains Signature Neon Accents */
-  --accent-yellow: #FCED3A;
-  --accent-purple: #AF52DE;
+  /* Restrained JetBrains-Inspired Accents */
   --accent-cyan: #21D4FD;
-  --accent-pink: #FF2A85;
-  --accent-emerald: #10B981;
-  --accent-blue: #36A3F7;
+  --accent-purple: #AF52DE;
+  --accent-amber: #F59E0B;
 
-  /* Typography Colors (High Contrast WCAG AAA Compliant) */
-  --text-primary: #FFFFFF;
-  --text-secondary: #9DA0A8;
-  --text-muted: #8C919A;
+  /* Typography Colors (WCAG AA/AAA Compliant on #0B0B0E and #111115) */
+  --text-primary: #F4F4F5;
+  --text-secondary: #A1A1AA;
+  --text-muted: #8E929B;
 
-  /* Frosted Glassmorphism & Border Highlights */
-  --border-subtle: rgba(255, 255, 255, 0.1);
-  --border-active: rgba(255, 255, 255, 0.2);
-  --glass-fill: rgba(15, 15, 18, 0.75);
-
-  /* Darcula Syntax Highlighting Token Ramp */
-  --syntax-keyword: #CC7832;
-  --syntax-string: #6A8759;
-  --syntax-number: #6897BB;
-  --syntax-comment: #808080;
-  --syntax-function: #FFC66D;
-  --syntax-identifier: #A9B7C6;
+  /* Hairline Borders & Glass Fill */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-active: rgba(255, 255, 255, 0.18);
+  --glass-fill: rgba(11, 11, 14, 0.85);
 }
 
 @theme {
   --color-canvas: #0B0B0E;
   --color-bg-canvas: #0B0B0E;
-  --color-surface: #151518;
-  --color-bg-surface: #151518;
-  --color-surface-elevated: #19191C;
-  --color-bg-surface-elevated: #19191C;
-  --color-surface-hover: #212126;
-  --color-bg-surface-hover: #212126;
-  --color-toolbar: #26262B;
-  --color-bg-toolbar: #26262B;
+  --color-surface: #111115;
+  --color-bg-surface: #111115;
+  --color-surface-elevated: #17171C;
+  --color-bg-surface-elevated: #17171C;
+  --color-surface-hover: #1D1D24;
+  --color-bg-surface-hover: #1D1D24;
 
-  --color-accent-yellow: #FCED3A;
-  --color-accent-purple: #AF52DE;
   --color-accent-cyan: #21D4FD;
-  --color-accent-pink: #FF2A85;
-  --color-accent-emerald: #10B981;
-  --color-accent-blue: #36A3F7;
+  --color-accent-purple: #AF52DE;
+  --color-accent-amber: #F59E0B;
 
+  --font-sans: var(--font-sans), system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), 'JetBrains Mono', ui-monospace, monospace;
 }
 
@@ -66,43 +50,24 @@
 html {
   color-scheme: dark;
   background-color: var(--bg-canvas, #0B0B0E);
-  color: var(--text-primary, #FFFFFF);
+  color: var(--text-primary, #F4F4F5);
   overflow-x: hidden;
 }
 
 body {
   background-color: var(--bg-canvas, #0B0B0E);
-  color: var(--text-primary, #FFFFFF);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-primary, #F4F4F5);
+  font-family: var(--font-sans), 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;
   overflow-x: clip;
   min-height: 100vh;
 }
 
-/* Monospace font stack with resilient fallbacks */
+/* Monospace font stack */
 code, kbd, samp, pre, .font-mono {
   font-family: var(--font-jetbrains-mono), 'JetBrains Mono', ui-monospace, monospace;
 }
 
-/* Glassmorphic UI utilities */
-.glass-panel {
-  background: var(--glass-fill, rgba(15, 15, 18, 0.75));
-  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.glass-panel-elevated {
-  background: rgba(25, 25, 28, 0.85);
-  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-
-.glass-panel-hover:hover {
-  border-color: var(--border-active, rgba(255, 255, 255, 0.2));
-}
-
-/* Custom scrollbars matching PyCharm IDE style */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -113,12 +78,12 @@ code, kbd, samp, pre, .font-mono {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #26262B;
+  background: #232329;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #323238;
+  background: #32323A;
 }
 
 /* Reduced motion accessibility compliance */

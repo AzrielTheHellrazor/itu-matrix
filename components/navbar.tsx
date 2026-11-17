@@ -3,23 +3,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Terminal, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 export interface NavbarProps {
-  statusText?: string;
-  isOnline?: boolean;
-  onLaunchConsole?: () => void;
   className?: string;
 }
 
-export function Navbar({
-  statusText = "5.8 GHz ONLINE",
-  isOnline = true,
-  onLaunchConsole,
-  className = "",
-}: NavbarProps) {
+const NAV_LINKS = [
+  { href: "#research", label: "Research" },
+  { href: "#subteams", label: "Subteams" },
+  { href: "#achievements", label: "Achievements" },
+  { href: "#partners", label: "Partners" },
+] as const;
+
+export function Navbar({ className = "" }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeHref, setActiveHref] = useState<string>("#overview");
+  const [activeHref, setActiveHref] = useState<string>("#research");
   const pendingScrollIdRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -37,14 +36,12 @@ export function Navbar({
 
   const handleMobileAnchorClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
-    href: string,
-    afterAction?: () => void
+    href: string
   ) => {
     e.preventDefault();
     const targetId = href.startsWith("#") ? href.slice(1) : href;
     pendingScrollIdRef.current = targetId;
     setActiveHref(href);
-    if (afterAction) afterAction();
     if (typeof window !== "undefined") {
       window.history.replaceState(null, "", href);
     }
@@ -71,173 +68,100 @@ export function Navbar({
   return (
     <header
       data-testid="matrix-navbar"
-      className={`sticky top-0 z-50 w-full border-b border-white/10 bg-canvas/80 backdrop-blur-md transition-all duration-300 ${className}`}
+      className={`sticky top-0 z-50 w-full border-b border-white/[0.08] bg-[#0B0B0E]/85 backdrop-blur-md ${className}`}
     >
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 min-h-16 py-2 flex items-center justify-between gap-2 lg:gap-3">
-        {/* Brand Logo */}
+      <div className="max-w-6xl mx-auto px-6 lg:px-8 min-h-16 py-2 flex items-center justify-between gap-4">
+        {/* Brand Monogram */}
         <Link
           href="#overview"
           onClick={(e) => {
             if (isOpen) {
               handleMobileAnchorClick(e, "#overview");
             } else {
-              setActiveHref("#overview");
+              setActiveHref("#research");
             }
           }}
-          className="flex items-center gap-2.5 group shrink-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+          className="flex items-center gap-3 group shrink-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
         >
-          <div className="h-8 w-8 sm:h-9 sm:w-9 rounded border border-white/20 bg-surface flex items-center justify-center font-mono font-black text-accent-yellow shadow-[0_0_10px_rgba(252,237,58,0.2)]">
-            M
-          </div>
-          <div className="flex flex-col">
-            <span className="font-mono font-bold tracking-wider text-[clamp(12px,0.9rem,16px)] text-white group-hover:text-accent-yellow transition-colors whitespace-nowrap">
+          <span
+            aria-hidden="true"
+            className="h-8 w-8 rounded-md border border-white/[0.14] bg-surface flex items-center justify-center"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2.5 13V3L8 8.5L13.5 3V13"
+                stroke="#F4F4F5"
+                strokeWidth="1.75"
+                strokeLinecap="square"
+                strokeLinejoin="miter"
+              />
+              <circle cx="8" cy="8.5" r="1.5" fill="#21D4FD" />
+            </svg>
+          </span>
+          <span className="flex flex-col">
+            <span className="font-mono font-semibold tracking-wider text-sm text-zinc-100 group-hover:text-white transition-colors whitespace-nowrap">
               ITU MATRIX
             </span>
-            <span className="font-mono text-[clamp(9px,0.6rem,11px)] tracking-widest text-zinc-400 whitespace-nowrap">
-              ROVER TEAM
+            <span className="font-mono text-[10px] tracking-[0.16em] text-zinc-400 uppercase whitespace-nowrap">
+              Materials Science
             </span>
-          </div>
+          </span>
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex flex-wrap items-center justify-center min-w-0 flex-1 gap-x-0.5 lg:gap-x-1 gap-y-1">
-          <a
-            href="#overview"
-            onClick={() => setActiveHref("#overview")}
-            className="relative px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap"
-          >
-            {activeHref === "#overview" && (
-              <motion.span
-                layoutId="navbar-active-pill"
-                transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                className="pointer-events-none absolute inset-0 -z-10 rounded bg-white/10 border border-white/15"
-              />
-            )}
-            Overview
-          </a>
-          <a
-            href="#rover-3d"
-            onClick={() => setActiveHref("#rover-3d")}
-            className="relative px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap"
-          >
-            {activeHref === "#rover-3d" && (
-              <motion.span
-                layoutId="navbar-active-pill"
-                transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                className="pointer-events-none absolute inset-0 -z-10 rounded bg-white/10 border border-white/15"
-              />
-            )}
-            3D Rover
-          </a>
-          <a
-            href="#ide"
-            onClick={() => setActiveHref("#ide")}
-            className="relative px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap"
-          >
-            {activeHref === "#ide" && (
-              <motion.span
-                layoutId="navbar-active-pill"
-                transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                className="pointer-events-none absolute inset-0 -z-10 rounded bg-white/10 border border-white/15"
-              />
-            )}
-            IDE
-          </a>
-          <a
-            href="#subteams"
-            onClick={() => setActiveHref("#subteams")}
-            className="relative px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap"
-          >
-            {activeHref === "#subteams" && (
-              <motion.span
-                layoutId="navbar-active-pill"
-                transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                className="pointer-events-none absolute inset-0 -z-10 rounded bg-white/10 border border-white/15"
-              />
-            )}
-            Subteams
-          </a>
-          <a
-            href="#telemetry"
-            onClick={() => setActiveHref("#telemetry")}
-            className="relative px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap"
-          >
-            {activeHref === "#telemetry" && (
-              <motion.span
-                layoutId="navbar-active-pill"
-                transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                className="pointer-events-none absolute inset-0 -z-10 rounded bg-white/10 border border-white/15"
-              />
-            )}
-            Telemetry
-          </a>
-          <a
-            href="#competitions"
-            onClick={() => setActiveHref("#competitions")}
-            className="relative px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap"
-          >
-            {activeHref === "#competitions" && (
-              <motion.span
-                layoutId="navbar-active-pill"
-                transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                className="pointer-events-none absolute inset-0 -z-10 rounded bg-white/10 border border-white/15"
-              />
-            )}
-            Competitions
-          </a>
-          <a
-            href="#sponsors"
-            onClick={() => setActiveHref("#sponsors")}
-            className="relative px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap"
-          >
-            {activeHref === "#sponsors" && (
-              <motion.span
-                layoutId="navbar-active-pill"
-                transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                className="pointer-events-none absolute inset-0 -z-10 rounded bg-white/10 border border-white/15"
-              />
-            )}
-            Sponsors
-          </a>
+        {/* Desktop Navigation */}
+        <nav
+          aria-label="Primary Navigation"
+          className="hidden md:flex flex-wrap items-center justify-center min-w-0 gap-1"
+        >
+          {NAV_LINKS.map((link) => {
+            const isActive = activeHref === link.href;
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setActiveHref(link.href)}
+                className="relative px-3 py-1.5 rounded-md text-xs font-mono font-medium text-zinc-300 hover:text-white transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="navbar-active-pill"
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                    className="pointer-events-none absolute inset-0 -z-10 rounded-md bg-white/[0.06] border border-white/[0.1]"
+                  />
+                )}
+                {link.label}
+              </a>
+            );
+          })}
         </nav>
 
-        {/* Right Section: Status Beacon + Action CTA */}
-        <div className="hidden md:flex items-center gap-2 lg:gap-3 shrink-0">
-          {/* 5.8 GHz Status Beacon */}
-          <div
-            data-testid="status-beacon"
-            className={`hidden xl:flex items-center gap-2 px-2.5 py-1 rounded-full border ${isOnline ? "border-emerald-500/30 bg-emerald-950/20 text-emerald-400" : "border-zinc-500/30 bg-zinc-950/20 text-zinc-400"} font-mono text-[clamp(10px,0.72rem,12px)] whitespace-nowrap`}
+        {/* Desktop Right Action */}
+        <div className="hidden md:flex items-center shrink-0">
+          <a
+            href="#partners"
+            data-testid="header-cta-partners"
+            onClick={() => setActiveHref("#partners")}
+            className="inline-flex items-center justify-center min-h-[36px] px-3.5 py-1.5 rounded-md border border-white/[0.12] bg-surface text-xs font-mono font-medium text-zinc-200 hover:border-white/[0.24] hover:text-white transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
           >
-            <span className="relative flex h-2 w-2">
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${isOnline ? "bg-emerald-400 opacity-75" : "opacity-0"}`}></span>
-              <span className={`relative inline-flex rounded-full h-2 w-2 ${isOnline ? "bg-emerald-500 animate-pulse" : "bg-zinc-500"}`}></span>
-            </span>
-            <span>{statusText}</span>
-          </div>
-
-          {/* Console CTA Button */}
-          <motion.a
-            href="#telemetry"
-            data-testid="header-cta-console"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={onLaunchConsole}
-            className="inline-flex items-center gap-1.5 px-2.5 lg:px-3.5 py-1.5 rounded bg-accent-yellow text-canvas font-mono font-semibold text-[clamp(11px,0.75rem,13px)] hover:bg-accent-yellow/90 hover:shadow-[0_0_12px_rgba(252,237,58,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap shrink-0"
-          >
-            <Terminal className="w-3.5 h-3.5" />
-            <span>Launch Console</span>
-          </motion.a>
+            Partner Inquiry
+          </a>
         </div>
 
-        {/* Mobile Hamburger Button */}
-        <div className="flex md:hidden items-center gap-2">
+        {/* Mobile Hamburger */}
+        <div className="flex md:hidden items-center">
           <button
             type="button"
             data-testid="mobile-menu-button"
             aria-expanded={isOpen}
             aria-controls="mobile-nav-drawer"
             onClick={() => setIsOpen(!isOpen)}
-            className="p-2 rounded text-zinc-400 hover:text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md text-zinc-300 hover:text-white hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
             aria-label="Toggle navigation menu"
           >
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -246,7 +170,10 @@ export function Navbar({
       </div>
 
       {/* Mobile Drawer */}
-      <AnimatePresence initial={false} onExitComplete={handleDrawerExitComplete}>
+      <AnimatePresence
+        initial={false}
+        onExitComplete={handleDrawerExitComplete}
+      >
         {isOpen && (
           <motion.div
             key="mobile-nav-drawer"
@@ -256,72 +183,43 @@ export function Navbar({
             animate={{ opacity: 1, height: "auto", y: 0 }}
             exit={{ opacity: 0, height: 0, y: -6 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
-            className="md:hidden absolute inset-x-0 top-full overflow-hidden border-b border-white/10 bg-canvas/95 backdrop-blur-xl px-4 pt-2 pb-6 space-y-3 z-50"
+            className="md:hidden absolute inset-x-0 top-full overflow-hidden border-b border-white/[0.08] bg-[#0B0B0E]/95 backdrop-blur-xl px-6 pt-3 pb-6 space-y-2 z-50"
           >
-            <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-white/5">
-              <div className={`flex items-center gap-2 px-2.5 py-1 rounded-full border ${isOnline ? "border-emerald-500/30 bg-emerald-950/20 text-emerald-400" : "border-zinc-500/30 bg-zinc-950/20 text-zinc-400"} font-mono text-xs`}>
-                <span className={`h-2 w-2 rounded-full ${isOnline ? "bg-emerald-500 animate-pulse" : "bg-zinc-500"}`}></span>
-                <span>{statusText}</span>
-              </div>
-              <a
-                href="#telemetry"
-                onClick={(e) => handleMobileAnchorClick(e, "#telemetry", onLaunchConsole)}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-accent-yellow text-canvas font-mono text-xs font-semibold"
-              >
-                <Terminal className="w-3 h-3" />
-                Launch Console
-              </a>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-1.5">
               <a
                 href="#overview"
                 onClick={(e) => handleMobileAnchorClick(e, "#overview")}
-                className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+                className="min-h-[44px] px-3 py-2.5 flex items-center rounded-md font-mono text-xs text-zinc-200 hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
               >
                 Overview
               </a>
               <a
-                href="#rover-3d"
-                onClick={(e) => handleMobileAnchorClick(e, "#rover-3d")}
-                className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+                href="#research"
+                onClick={(e) => handleMobileAnchorClick(e, "#research")}
+                className="min-h-[44px] px-3 py-2.5 flex items-center rounded-md font-mono text-xs text-zinc-200 hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
               >
-                3D Rover
-              </a>
-              <a
-                href="#ide"
-                onClick={(e) => handleMobileAnchorClick(e, "#ide")}
-                className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
-              >
-                PyCharm IDE
+                Research
               </a>
               <a
                 href="#subteams"
                 onClick={(e) => handleMobileAnchorClick(e, "#subteams")}
-                className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+                className="min-h-[44px] px-3 py-2.5 flex items-center rounded-md font-mono text-xs text-zinc-200 hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
               >
                 Subteams
               </a>
               <a
-                href="#telemetry"
-                onClick={(e) => handleMobileAnchorClick(e, "#telemetry")}
-                className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+                href="#achievements"
+                onClick={(e) => handleMobileAnchorClick(e, "#achievements")}
+                className="min-h-[44px] px-3 py-2.5 flex items-center rounded-md font-mono text-xs text-zinc-200 hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
               >
-                Telemetry
+                Achievements
               </a>
               <a
-                href="#competitions"
-                onClick={(e) => handleMobileAnchorClick(e, "#competitions")}
-                className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+                href="#partners"
+                onClick={(e) => handleMobileAnchorClick(e, "#partners")}
+                className="min-h-[44px] px-3 py-2.5 flex items-center rounded-md font-mono text-xs text-zinc-200 hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
               >
-                Competitions
-              </a>
-              <a
-                href="#sponsors"
-                onClick={(e) => handleMobileAnchorClick(e, "#sponsors")}
-                className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
-              >
-                Sponsors
+                Partners
               </a>
             </div>
           </motion.div>

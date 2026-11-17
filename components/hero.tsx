@@ -1,180 +1,199 @@
 "use client";
 
-import React from "react";
-import { motion, type Variants } from "framer-motion";
-import { Box, Terminal, Award, Cpu, Wifi, Compass, Sparkles } from "lucide-react";
+import React, { useState } from "react";
+import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
+import { Pause, Play, RotateCcw } from "lucide-react";
+import {
+  LATTICE_SPECS,
+  getLatticeSpec,
+  type LatticeSystem,
+} from "@/data/materials-data";
 
-export interface HeroProps {
-  className?: string;
-}
+const CrystalLatticeViewport = dynamic(
+  () => import("@/components/crystal-lattice-viewport"),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        data-testid="lattice-ssr-placeholder"
+        className="w-full h-full flex flex-col items-center justify-center bg-surface rounded-xl p-8"
+      >
+        <div className="h-6 w-6 rounded-full border border-white/15 border-t-accent-cyan animate-spin mb-3" />
+        <span className="font-mono text-xs tracking-widest uppercase text-zinc-400">
+          Loading Unit Cell
+        </span>
+      </div>
+    ),
+  }
+);
 
-const HERO_CONTAINER: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.04 },
-  },
-};
+export function Hero() {
+  const [activeLattice, setActiveLattice] = useState<LatticeSystem>("BCC");
+  const [resetNonce, setResetNonce] = useState<number>(0);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
 
-const HERO_ITEM: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const },
-  },
-};
+  const currentSpec = getLatticeSpec(activeLattice);
 
-export function Hero({ className = "" }: HeroProps) {
   return (
     <section
       id="overview"
-      className={`relative min-h-[90vh] flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8 py-16 sm:py-24 overflow-hidden ${className}`}
+      data-testid="hero-section"
+      className="min-h-[calc(100vh-4rem)] flex items-center py-12 lg:py-20"
     >
-      {/* Background JetBrains Grid & Radial Glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(175,82,222,0.15),transparent_70%)] pointer-events-none" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
-
-      <motion.div
-        variants={HERO_CONTAINER}
-        initial="hidden"
-        animate="visible"
-        className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center"
-      >
-        {/* JetBrains Style Mission Status Pill Badge */}
-        <motion.div
-          variants={HERO_ITEM}
-          data-testid="hero-status-pill"
-          className="inline-flex flex-wrap justify-center max-w-full min-w-0 break-words [overflow-wrap:anywhere] text-center items-center gap-x-2.5 gap-y-1 px-3 sm:px-4 py-1.5 rounded-full border border-white/10 bg-surface/80 backdrop-blur-md text-[clamp(10px,0.75rem,13px)] font-mono text-zinc-300 shadow-[0_0_15px_rgba(255,255,255,0.05)] mb-6 hover:border-accent-yellow/40 transition-colors"
-        >
-          <span className="h-2 w-2 rounded-full bg-accent-yellow animate-pulse" />
-          <span className="font-semibold text-accent-yellow">URC 2026 // ACTIVE MISSION</span>
-          <span className="text-zinc-400">|</span>
-          <span className="tracking-wide">ITU MATRIX // AUTONOMOUS PLANETARY ROVER</span>
-        </motion.div>
-
-        {/* Electric Neon Gradient Mask H1 */}
-        <motion.h1
-          variants={HERO_ITEM}
-          data-testid="hero-headline"
-          style={{ fontSize: "clamp(1.5rem, 8.5vw, 4.5rem)" }}
-          className="text-4xl sm:text-6xl md:text-7xl max-w-full min-w-0 break-words [overflow-wrap:anywhere] font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-zinc-100 to-zinc-400 mb-6 leading-[1.1]"
-        >
-          Engineered for the Uncharted:
-          <span className="block mt-2 pb-1 bg-clip-text text-transparent bg-gradient-to-r from-accent-yellow via-accent-purple to-accent-cyan">
-            Autonomous Robotics by Istanbul Technical University
-          </span>
-          <span className="sr-only">AUTONOMOUS PLANETARY ROVER</span>
-        </motion.h1>
-
-        {/* Subtitle / Positioning Statement */}
-        <motion.p
-          variants={HERO_ITEM}
-          className="max-w-2xl text-base sm:text-lg text-zinc-400 font-sans leading-relaxed mb-8"
-        >
-          Next-generation extraterrestrial exploration platform designed for extreme Martian terrains, 
-          powered by ROS 2 autonomy, custom 6-DOF kinematics, and deep planetary science payload systems.
-        </motion.p>
-
-        {/* Carl Sagan Inspirational Motto Blockquote */}
-        <motion.blockquote
-          variants={HERO_ITEM}
-          data-testid="hero-motto"
-          className="relative px-6 py-4 rounded-xl border border-white/10 bg-surface/50 backdrop-blur-sm max-w-xl mx-auto mb-10 shadow-lg"
-        >
-          <div className="flex items-center justify-center gap-2 text-accent-cyan mb-1.5">
-            <Sparkles className="w-4 h-4" />
-            <span className="font-mono text-xs uppercase tracking-widest text-zinc-400">Team Philosophy</span>
-          </div>
-          <p className="text-sm sm:text-base italic text-zinc-200 font-sans">
-            “Somewhere, something incredible is waiting to be known.”
-          </p>
-          <footer className="mt-2 text-xs font-mono text-zinc-400">
-            — <cite className="text-accent-yellow not-italic">Carl Sagan</cite>
-          </footer>
-        </motion.blockquote>
-
-        {/* Action CTAs with Hover Glow */}
-        <motion.div
-          variants={HERO_ITEM}
-          className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-4 mb-16"
-        >
-          <motion.a
-            href="#rover-3d"
-            data-testid="hero-cta-inspect-3d"
-            whileHover={{ y: -2, scale: 1.01 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 360, damping: 24 }}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-lg bg-accent-yellow text-canvas font-mono font-bold text-sm tracking-wide shadow-[0_0_20px_rgba(252,237,58,0.35)] hover:bg-accent-yellow/90 hover:shadow-[0_0_30px_rgba(252,237,58,0.5)] transition-colors"
-          >
-            <Box className="w-4 h-4" />
-            <span>Inspect Rover 3D</span>
-          </motion.a>
-
-          <motion.a
-            href="#telemetry"
-            data-testid="hero-cta-console"
-            whileHover={{ y: -2, scale: 1.01 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 360, damping: 24 }}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-lg border border-white/20 bg-surface/60 backdrop-blur-md text-white font-mono font-medium text-sm hover:border-accent-cyan/60 hover:text-accent-cyan hover:shadow-[0_0_20px_rgba(33,212,253,0.25)] transition-colors"
-          >
-            <Terminal className="w-4 h-4 text-accent-cyan" />
-            <span>Open Matrix Console</span>
-          </motion.a>
-        </motion.div>
-
-        {/* Quick Metrics Chips Grid (2x2 on mobile, 4-col on md+) */}
-        <motion.div
-          variants={HERO_ITEM}
-          data-testid="hero-metrics-chips"
-          className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 w-full max-w-4xl"
-        >
-          {/* Metric Chip 1: 6-DOF */}
+      <div className="max-w-6xl mx-auto px-6 lg:px-8 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          {/* Editorial Copy Column */}
           <motion.div
-            whileHover={{ y: -4, scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 360, damping: 24 }}
-            className="p-4 rounded-xl border border-white/10 bg-surface/40 backdrop-blur-sm flex flex-col items-center text-center hover:border-accent-yellow/30 transition-colors"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="lg:col-span-5 max-w-full break-words"
           >
-            <Cpu className="w-5 h-5 text-accent-yellow mb-1.5" />
-            <span className="font-mono font-bold text-lg sm:text-xl text-white">6-DOF</span>
-            <span className="text-xs font-mono text-zinc-400 mt-0.5">6-DOF Manipulator</span>
+            <div className="inline-flex items-center gap-2 font-mono text-xs tracking-[0.14em] uppercase text-zinc-400 mb-6">
+              <span
+                aria-hidden="true"
+                className="h-1.5 w-1.5 rounded-full bg-accent-cyan"
+              />
+              <span>İTÜ · Metallurgy &amp; Materials Science</span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-[-0.03em] leading-[1.08] text-zinc-100 mb-5">
+              Engineering Matter from Atomic Lattice to Structural Performance
+            </h1>
+
+            <p className="text-base text-zinc-400 leading-relaxed max-w-md mb-8">
+              ITU Matrix is a student-led metallurgy and materials science team
+              at Istanbul Technical University advancing alloy design, composite
+              matrices, and microstructural characterization.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <a
+                href="#research"
+                data-testid="hero-cta-research"
+                className="inline-flex items-center justify-center min-h-[44px] px-5 py-2.5 rounded-md bg-zinc-100 text-[#0B0B0E] text-sm font-medium hover:bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+              >
+                Explore Research
+              </a>
+              <a
+                href="#subteams"
+                data-testid="hero-cta-subteams"
+                className="inline-flex items-center justify-center min-h-[44px] px-5 py-2.5 rounded-md border border-white/[0.12] bg-surface text-sm font-medium text-zinc-200 hover:border-white/[0.24] hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+              >
+                View Divisions
+              </a>
+            </div>
           </motion.div>
 
-          {/* Metric Chip 2: 99.4% */}
+          {/* 3D Crystal Lattice Stage */}
           <motion.div
-            whileHover={{ y: -4, scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 360, damping: 24 }}
-            className="p-4 rounded-xl border border-white/10 bg-surface/40 backdrop-blur-sm flex flex-col items-center text-center hover:border-accent-cyan/30 transition-colors"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
+            className="lg:col-span-7"
           >
-            <Compass className="w-5 h-5 text-accent-cyan mb-1.5" />
-            <span className="font-mono font-bold text-lg sm:text-xl text-white">99.4%</span>
-            <span className="text-xs font-mono text-zinc-400 mt-0.5">99.4% Autonomous Nav</span>
-          </motion.div>
+            <div
+              data-testid="crystal-lattice-stage"
+              className="relative h-[380px] sm:h-[460px] lg:h-[500px] w-full rounded-xl border border-white/[0.08] bg-surface overflow-hidden"
+            >
+              {/* Single restrained ambient radial highlight */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-15"
+                style={{
+                  background: `radial-gradient(circle at 50% 45%, ${currentSpec.accentHex}, transparent 68%)`,
+                }}
+              />
 
-          {/* Metric Chip 3: URC World 3rd & ERC Silver */}
-          <motion.div
-            whileHover={{ y: -4, scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 360, damping: 24 }}
-            className="p-4 rounded-xl border border-white/10 bg-surface/40 backdrop-blur-sm flex flex-col items-center text-center hover:border-accent-purple/30 transition-colors"
-          >
-            <Award className="w-5 h-5 text-accent-purple mb-1.5" />
-            <span className="font-mono font-bold text-base sm:text-lg text-white">URC World 3rd</span>
-            <span className="text-xs font-mono text-zinc-400 mt-0.5">ERC Silver</span>
-          </motion.div>
+              {/* Top-left Lattice System Switcher & Controls */}
+              <div className="absolute top-4 left-4 z-10 flex flex-wrap items-center gap-2">
+                <div
+                  role="group"
+                  aria-label="Crystal lattice unit cell selector"
+                  className="inline-flex items-center p-1 rounded-md border border-white/[0.1] bg-[#0B0B0E]/85 backdrop-blur-md"
+                >
+                  {LATTICE_SPECS.map((spec) => {
+                    const isSelected = activeLattice === spec.id;
+                    return (
+                      <button
+                        key={spec.id}
+                        type="button"
+                        data-testid={`lattice-btn-${spec.id}`}
+                        aria-pressed={isSelected}
+                        onClick={() => setActiveLattice(spec.id)}
+                        className={`relative min-h-[28px] min-w-[44px] px-2.5 py-1 rounded text-xs font-mono font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan ${
+                          isSelected
+                            ? "text-zinc-100"
+                            : "text-zinc-400 hover:text-zinc-200"
+                        }`}
+                      >
+                        {isSelected && (
+                          <motion.span
+                            layoutId="lattice-pill"
+                            transition={{
+                              type: "spring",
+                              stiffness: 400,
+                              damping: 32,
+                            }}
+                            className="pointer-events-none absolute inset-0 rounded bg-white/[0.1] border border-white/[0.16]"
+                          />
+                        )}
+                        <span className="relative z-10">{spec.id}</span>
+                      </button>
+                    );
+                  })}
+                </div>
 
-          {/* Metric Chip 4: 5.8 GHz & Sensors */}
-          <motion.div
-            whileHover={{ y: -4, scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 360, damping: 24 }}
-            className="p-4 rounded-xl border border-white/10 bg-surface/40 backdrop-blur-sm flex flex-col items-center text-center hover:border-emerald-400/30 transition-colors"
-          >
-            <Wifi className="w-5 h-5 text-emerald-400 mb-1.5" />
-            <span className="font-mono font-bold text-lg sm:text-xl text-white">5.8 GHz</span>
-            <span className="text-xs font-mono text-zinc-400 mt-0.5">12+ Live Sensor Streams</span>
+                <button
+                  type="button"
+                  data-testid="lattice-reset-btn"
+                  onClick={() => setResetNonce((n) => n + 1)}
+                  aria-label="Reset 3D lattice camera"
+                  className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-md border border-white/[0.1] bg-[#0B0B0E]/85 backdrop-blur-md text-zinc-300 hover:text-white hover:border-white/[0.22] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                </button>
+
+                <button
+                  type="button"
+                  data-testid="lattice-pause-btn"
+                  aria-pressed={isPaused}
+                  onClick={() => setIsPaused((p) => !p)}
+                  aria-label={isPaused ? "Resume lattice rotation" : "Pause lattice rotation"}
+                  className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-md border border-white/[0.1] bg-[#0B0B0E]/85 backdrop-blur-md text-zinc-300 hover:text-white hover:border-white/[0.22] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+                >
+                  {isPaused ? (
+                    <Play className="w-3.5 h-3.5" />
+                  ) : (
+                    <Pause className="w-3.5 h-3.5" />
+                  )}
+                </button>
+              </div>
+
+              {/* Top-right Material Spec Readout */}
+              <div
+                data-testid="lattice-spec-readout"
+                className="hidden sm:flex items-center gap-2 absolute top-4 right-4 z-10 px-3 py-1.5 rounded-md border border-white/[0.08] bg-[#0B0B0E]/80 backdrop-blur-md font-mono text-[11px] text-zinc-300"
+              >
+                <span>{currentSpec.materialExample}</span>
+                <span className="text-zinc-400">·</span>
+                <span>APF {currentSpec.packingFactor}</span>
+                <span className="text-zinc-400">·</span>
+                <span>CN {currentSpec.coordinationNumber}</span>
+              </div>
+
+              {/* 3D Canvas */}
+              <CrystalLatticeViewport
+                latticeType={activeLattice}
+                resetNonce={resetNonce}
+                isPaused={isPaused}
+                accentHex={currentSpec.accentHex}
+              />
+            </div>
           </motion.div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </section>
   );
 }

@@ -1,9 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { MotionProvider } from "@/components/motion-provider";
 import { Navbar } from "@/components/navbar";
-import { SponsorsFooter } from "@/components/sponsors-footer";
+import { MinimalFooter } from "@/components/minimal-footer";
 import "./globals.css";
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -19,21 +26,21 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://itumatrix.com"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
   ),
-  title: "ITU MATRIX | Autonomous Planetary Rover Team",
+  title: "ITU MATRIX | Metallurgy & Materials Science",
   description:
-    "Official showcase of ITU Matrix Rover Team. Engineering autonomous planetary exploration rovers, competing at URC and ERC.",
+    "Student-led metallurgy and materials science team at Istanbul Technical University advancing alloy design, composite matrices, powder metallurgy, and phase characterization.",
   keywords: [
     "ITU Matrix",
-    "Rover Team",
-    "URC",
-    "ERC",
-    "Robotics",
-    "Autonomous Rover",
-    "Space Exploration",
+    "Metallurgy",
+    "Materials Science",
+    "Istanbul Technical University",
+    "Alloy Design",
+    "Composite Matrices",
+    "Powder Metallurgy",
   ],
-  authors: [{ name: "ITU Matrix Team" }],
+  authors: [{ name: "ITU Matrix" }],
   alternates: {
     canonical: "/",
   },
@@ -41,27 +48,27 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "ITU MATRIX | Autonomous Planetary Rover Team",
+    title: "ITU MATRIX | Metallurgy & Materials Science",
     description:
-      "Official showcase of ITU Matrix Rover Team. Engineering autonomous planetary exploration rovers, competing at URC and ERC.",
+      "Student-led metallurgy and materials science team at Istanbul Technical University advancing alloy design, composite matrices, and phase characterization.",
     type: "website",
     locale: "en_US",
     siteName: "ITU MATRIX",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.svg",
         width: 1200,
         height: 630,
-        alt: "ITU MATRIX Autonomous Planetary Rover Team",
+        alt: "ITU MATRIX — Metallurgy and Materials Science",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ITU MATRIX | Autonomous Planetary Rover Team",
+    title: "ITU MATRIX | Metallurgy & Materials Science",
     description:
-      "Autonomous planetary exploration rovers engineered at Istanbul Technical University (ITU).",
-    images: ["/og-image.png"],
+      "Metallurgy and materials science at Istanbul Technical University.",
+    images: ["/og-image.svg"],
   },
 };
 
@@ -72,14 +79,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark scroll-smooth overflow-x-hidden">
-      <body className={`${jetbrainsMono.variable} min-h-screen bg-canvas text-white antialiased overflow-x-clip selection:bg-accent-yellow selection:text-black`}>
+      <body
+        className={`${plusJakarta.variable} ${jetbrainsMono.variable} min-h-screen bg-canvas text-zinc-100 antialiased overflow-x-clip selection:bg-accent-cyan selection:text-black`}
+      >
         <div className="flex min-h-screen flex-col w-full overflow-x-clip">
           <MotionProvider>
             <Navbar />
-            <main className="flex-1 w-full max-w-7xl mx-auto flex flex-col">
+            <main className="flex-1 w-full flex flex-col">
               {children}
             </main>
-            <SponsorsFooter />
+            <MinimalFooter />
           </MotionProvider>
         </div>
       </body>

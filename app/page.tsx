@@ -1,19 +1,15 @@
 import { Hero } from "@/components/hero";
-import { RoverStudio } from "@/components/rover-studio";
-import { PyCharmWindow } from "@/components/pycharm-window";
-import { TelemetryConsole } from "@/components/telemetry-console";
-import { SubteamsBento } from "@/components/subteams-bento";
-import { AchievementsTimeline } from "@/components/achievements-timeline";
+import { MaterialsShowcase } from "@/components/materials-showcase";
+import { SubteamsGrid } from "@/components/subteams-grid";
+import { AchievementsSection } from "@/components/achievements-section";
 
 export default function Home() {
   return (
     <>
       <Hero />
-      <RoverStudio />
-      <PyCharmWindow />
-      <TelemetryConsole />
-      <SubteamsBento />
-      <AchievementsTimeline />
+      <MaterialsShowcase />
+      <SubteamsGrid />
+      <AchievementsSection />
     </>
   );
 }
