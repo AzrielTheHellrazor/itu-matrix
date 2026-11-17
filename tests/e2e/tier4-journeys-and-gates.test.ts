@@ -63,7 +63,7 @@ describe("Tier 4: Multi-Step User Journeys & Build/Type/Lint Gates", () => {
         description: "Confirm hero and research copy reflect Metallurgy & Materials Science",
         action: () => {},
         assert: (s) => {
-          expect(s.renderedHtml).toContain("Metallurgy &amp; Materials Science");
+          expect(s.renderedHtml).toContain("Materials R&amp;D");
           expect(s.renderedHtml).toContain("Engineering Matter from Atomic Lattice");
           expect(s.renderedHtml).toContain("MAT-01");
         },

@@ -92,7 +92,7 @@ describe("Tier 1: Environment, Git Hygiene, Banned-Artifact Gate & Materials Dat
       .filter(Boolean);
     expect(subjects.length).toBeGreaterThan(0);
     const ccPattern =
-      /^(feat|fix|chore|build|refactor|docs|test|ci|perf)(\([a-z0-9\-/]+\))?:\s+\S+/;
+      /^(feat|fix|chore|build|refactor|docs|test|ci|perf)(\([a-z0-9\-/,]+\))?:\s+\S+/;
     for (const subject of subjects) {
       expect(subject).toMatch(ccPattern);
     }

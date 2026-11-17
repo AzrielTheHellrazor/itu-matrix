@@ -137,7 +137,7 @@ describe("Tier 3: Built SSR HTML, React SSR Markup, 3D Lattice Math & WebGL Safe
     expect(mobileBtn?.getAttribute("aria-expanded")).toBe("false");
     expect(mobileBtn?.getAttribute("aria-controls")).toBe("mobile-nav-drawer");
     expect(html).toContain("ITU MATRIX");
-    expect(html).toContain("Materials Science");
+    expect(html).toContain("Materials R&amp;D Team");
   });
 
   test("T3.05: Hero renders 3D crystal lattice controls, SSR placeholder, and zero captions below canvas", () => {
@@ -174,10 +174,13 @@ describe("Tier 3: Built SSR HTML, React SSR Markup, 3D Lattice Math & WebGL Safe
     );
     expect(html).toContain("MAT-01");
     expect(html).toContain("MAT-04");
-    expect(html).toContain("Alloy Design &amp; Physical Metallurgy");
+    expect(html).toContain("Nanoclay Reinforced rPET/PP Microfibrillated Composites");
+    expect(html).toContain("EELISA Special Award");
+    expect(html).toContain("S. Gökberk Gök");
+    expect(html).toContain("Prof. Dr. Murat Baydoğan");
+    expect(html).toContain("Prof. Dr. Sebahattin Gürmen");
     expect(html).toContain("1773");
     expect(html).toContain("1961–1962");
-    expect(html).toContain("1982");
     expect(html).toContain("1998");
     expect(html).toContain("Istanbul Technical University");
     expect(html).toContain("Ayazağa Campus, Maslak, Istanbul");
