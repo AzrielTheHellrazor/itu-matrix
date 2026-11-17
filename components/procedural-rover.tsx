@@ -497,7 +497,7 @@ export function ProceduralRover({
           {/* Parabolic Dish Cone */}
           <mesh position={[0, 0.28, 0]} rotation={[-Math.PI / 4, 0, 0]}>
             <coneGeometry args={[0.18, 0.07, 24, 1, true]} />
-            <meshStandardMaterial {...pbrMaterialProps} color={accentGoldColor} />
+            <meshStandardMaterial {...pbrMaterialProps} color={accentGoldColor} side={THREE.DoubleSide} />
           </mesh>
 
           {/* Central Feed Horn */}

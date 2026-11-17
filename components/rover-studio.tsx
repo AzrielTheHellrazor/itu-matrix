@@ -22,7 +22,7 @@ export const ROVER_HOTSPOTS: RoverHotspot[] = [
     id: "arm",
     label: "Robotic Arm",
     position: [0.5, 0.9, 0.9],
-    targetPosition: [1.2, 1.2, 1.5],
+    targetPosition: [1.8, 1.5, 2.2],
     description:
       "6-DOF articulated robotic arm designed for dexterous sample acquisition, panel servicing, and precision instrument placement in extreme Martian environments.",
     specs: {
@@ -52,7 +52,7 @@ export const ROVER_HOTSPOTS: RoverHotspot[] = [
     id: "mast",
     label: "Mast & LiDAR",
     position: [-0.4, 1.2, 0.7],
-    targetPosition: [-0.8, 1.5, 1.8],
+    targetPosition: [-1.2, 1.8, 2.2],
     description:
       "Articulated sensor mast hosting high-resolution stereo vision cameras, environmental sensing package, and 360-degree LiDAR cylinder.",
     specs: {
@@ -66,8 +66,8 @@ export const ROVER_HOTSPOTS: RoverHotspot[] = [
   {
     id: "science",
     label: "Science Subsystem",
-    position: [0.3, 0.6, -0.5],
-    targetPosition: [0.8, 1.0, -1.2],
+    position: [-0.26, 1.15, -0.38],
+    targetPosition: [-1.3, 1.75, -1.7],
     description:
       "Automated onboard astrobiology scientific laboratory with Raman laser spectrometer, hermetic soil carousel, and micro-reagent wet chemistry lab.",
     specs: {
@@ -81,8 +81,8 @@ export const ROVER_HOTSPOTS: RoverHotspot[] = [
   {
     id: "compute",
     label: "Autonomous Compute",
-    position: [-0.2, 0.7, -0.3],
-    targetPosition: [-0.6, 1.1, -1.0],
+    position: [0.26, 1.15, -0.42],
+    targetPosition: [1.3, 1.75, -1.75],
     description:
       "Dual redundant mission compute avionics running ROS2 Humble on NVIDIA Jetson AGX Orin with real-time FDCAN bus communication.",
     specs: {
@@ -102,6 +102,7 @@ export interface RoverStudioProps {
 export function RoverStudio({ className = "" }: RoverStudioProps) {
   const [isWireframe, setIsWireframe] = useState<boolean>(false);
   const [activeHotspot, setActiveHotspot] = useState<RoverHotspot | null>(null);
+  const [resetNonce, setResetNonce] = useState<number>(0);
 
   const getSubsystemIcon = (id: string) => {
     switch (id) {
@@ -187,13 +188,13 @@ export function RoverStudio({ className = "" }: RoverStudioProps) {
           </div>
 
           {/* HUD Actions: Wireframe Toggle & Reset View */}
-          <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full md:w-auto justify-end">
             {/* Wireframe Toggle Button */}
             <button
               type="button"
               data-testid="wireframe-toggle"
               onClick={() => setIsWireframe(prev => !prev)}
-              className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded text-xs font-mono font-medium transition-all cursor-pointer border ${
+              className={`inline-flex items-center gap-2 px-2.5 sm:px-3.5 py-1.5 rounded text-xs font-mono font-medium transition-all cursor-pointer border ${
                 isWireframe
                   ? "border-accent-cyan bg-accent-cyan/20 text-accent-cyan shadow-[0_0_15px_rgba(33,212,253,0.4)]"
                   : "border-white/10 bg-surface/80 text-zinc-300 hover:text-white hover:border-white/30"
@@ -207,8 +208,11 @@ export function RoverStudio({ className = "" }: RoverStudioProps) {
             <button
               type="button"
               data-testid="reset-view"
-              onClick={() => setActiveHotspot(null)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono font-medium bg-surface/80 text-zinc-300 hover:text-white border border-white/10 hover:border-white/30 transition-all cursor-pointer"
+              onClick={() => {
+                setActiveHotspot(null);
+                setResetNonce((n) => n + 1);
+              }}
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded text-xs font-mono font-medium bg-surface/80 text-zinc-300 hover:text-white border border-white/10 hover:border-white/30 transition-all cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Reset View</span>
@@ -229,6 +233,7 @@ export function RoverStudio({ className = "" }: RoverStudioProps) {
                 activeHotspot={activeHotspot}
                 onSelectHotspot={(hs) => setActiveHotspot(activeHotspot?.id === hs?.id ? null : hs)}
                 hotspots={ROVER_HOTSPOTS}
+                resetNonce={resetNonce}
               >
                 <ProceduralRover
                   isWireframe={isWireframe}
