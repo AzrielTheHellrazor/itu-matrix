@@ -26,7 +26,9 @@ import {
   getSnippetById,
 } from "../../data/code-snippets";
 import { MotionProvider } from "../../components/motion-provider";
+import { Navbar } from "../../components/navbar";
 import { tokenizePythonDarcula } from "../../components/pycharm-window";
+import nextConfig from "../../next.config";
 
 function collectAllNodes(node: ParsedNode, out: ParsedNode[] = []): ParsedNode[] {
   out.push(node);
@@ -320,6 +322,41 @@ describe("Tier 5: Adversarial Hardening & Deep Verification Suite", () => {
         )
       );
       expect(ssrCheck).toContain('data-motion-root="ok"');
+    });
+
+    test("T5.A11: allowedDevOrigins for 127.0.0.1 & Mobile Drawer Post-Exit Anchor Scroll Recovery", () => {
+      expect(Array.isArray(nextConfig.allowedDevOrigins)).toBe(true);
+      expect(nextConfig.allowedDevOrigins).toContain("127.0.0.1");
+      expect(nextConfig.allowedDevOrigins).toContain("localhost");
+
+      const navbarSrc = loadProjectSource("components/navbar.tsx");
+      expect(navbarSrc).toContain("pendingScrollIdRef");
+      expect(navbarSrc).toContain("onExitComplete={handleDrawerExitComplete}");
+      expect(navbarSrc).toContain("e.preventDefault()");
+      expect(navbarSrc).toContain('window.history.replaceState(null, "", href)');
+      expect(navbarSrc).toContain("prefers-reduced-motion: reduce");
+      expect(navbarSrc).toContain("targetEl.scrollIntoView({ behavior, block: \"start\" })");
+
+      for (const href of [
+        "#overview",
+        "#rover-3d",
+        "#ide",
+        "#subteams",
+        "#telemetry",
+        "#competitions",
+        "#sponsors",
+      ]) {
+        expect(navbarSrc).toContain(`handleMobileAnchorClick(e, "${href}"`);
+      }
+
+      const renderedNav = renderToStaticMarkup(
+        React.createElement(MotionProvider, null, React.createElement(Navbar))
+      );
+      const navRoot = parseHtml(renderedNav);
+      const mobileBtn = navRoot.findByTestId("mobile-menu-button");
+      expect(mobileBtn).not.toBeNull();
+      expect(mobileBtn?.getAttribute("aria-controls")).toBe("mobile-nav-drawer");
+      expect(mobileBtn?.getAttribute("aria-expanded")).toBe("false");
     });
   });
 
