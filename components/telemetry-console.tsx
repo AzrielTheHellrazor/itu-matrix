@@ -21,11 +21,19 @@ const QUICK_COMMANDS = [
 ];
 
 export function TelemetryConsole() {
-  const [session] = useState(() => createTelemetrySession());
-  const [history, setHistory] = useState<HistoryRecord[]>(() => {
-    const initial = createTelemetrySession().execute("telemetry");
-    return [{ input: "telemetry", output: initial.output, status: initial.status }];
+  const [{ session, initialRecord }] = useState(() => {
+    const telemetrySession = createTelemetrySession();
+    const initial = telemetrySession.execute("telemetry");
+    return {
+      session: telemetrySession,
+      initialRecord: {
+        input: "telemetry",
+        output: initial.output,
+        status: initial.status,
+      } as HistoryRecord,
+    };
   });
+  const [history, setHistory] = useState<HistoryRecord[]>([initialRecord]);
   const [inputVal, setInputVal] = useState<string>("");
   const [historyPointer, setHistoryPointer] = useState<number>(-1);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -158,6 +166,7 @@ export function TelemetryConsole() {
               onClick={(e) => {
                 e.stopPropagation();
                 setHistory([]);
+                setHistoryPointer(-1);
               }}
               className="text-zinc-400 hover:text-white text-xs font-mono flex items-center gap-1.5 transition-colors"
               title="Clear screen buffer"

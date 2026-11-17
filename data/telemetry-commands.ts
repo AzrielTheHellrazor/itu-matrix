@@ -30,7 +30,10 @@ export class TelemetrySession {
   };
 
   execute(input: string): CommandExecutionResult {
-    const raw = (input || "").trim();
+    if (typeof input !== "string") {
+      return { command: "", args: [], output: [], status: "success" };
+    }
+    const raw = input.trim();
     if (!raw) {
       return { command: "", args: [], output: [], status: "success" };
     }
@@ -183,6 +186,13 @@ export class TelemetrySession {
   }
 
   getPreviousCommand(indexFromBack = 0): string | null {
+    if (
+      typeof indexFromBack !== "number" ||
+      !Number.isInteger(indexFromBack) ||
+      indexFromBack < 0
+    ) {
+      return null;
+    }
     if (this.history.length === 0) return null;
     const idx = this.history.length - 1 - indexFromBack;
     if (idx < 0 || idx >= this.history.length) return null;

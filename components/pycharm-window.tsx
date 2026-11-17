@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { Play, Terminal, Copy, Check, FileCode2, GitBranch } from "lucide-react";
-import { CodeSnippetTab, DARCULA_PALETTE } from "@/data/code-snippets";
+import { CodeSnippetTab, CODE_SNIPPETS, DARCULA_PALETTE } from "@/data/code-snippets";
 
 const PYCHARM_SNIPPETS: CodeSnippetTab[] = [
   {
@@ -220,20 +220,155 @@ class ScienceSpectrometrySuite:
   },
 ];
 
+interface SyntaxToken {
+  text: string;
+  color: string;
+}
+
+const PYTHON_KEYWORDS = new Set([
+  "import", "from", "as", "class", "def", "return", "if", "elif", "else",
+  "while", "for", "in", "not", "and", "or", "is", "None", "True", "False",
+  "with", "try", "except", "finally", "raise", "pass", "break", "continue",
+  "yield", "lambda", "async", "await", "global", "nonlocal", "assert", "del",
+]);
+
+function tokenizePythonDarcula(code: string): SyntaxToken[] {
+  const tokens: SyntaxToken[] = [];
+  const pushToken = (text: string, color: string) => {
+    if (!text) return;
+    const last = tokens[tokens.length - 1];
+    if (last && last.color === color && color === DARCULA_PALETTE.identifier) {
+      last.text += text;
+    } else {
+      tokens.push({ text, color });
+    }
+  };
+
+  let i = 0;
+  let expectDefOrClass = false;
+  const len = code.length;
+
+  while (i < len) {
+    const ch = code[i];
+
+    if (ch === "#") {
+      let end = code.indexOf("\n", i);
+      if (end === -1) end = len;
+      pushToken(code.slice(i, end), DARCULA_PALETTE.comment);
+      expectDefOrClass = false;
+      i = end;
+      continue;
+    }
+
+    const isPrefixedString =
+      (ch === "f" || ch === "F" || ch === "r" || ch === "R" ||
+       ch === "b" || ch === "B" || ch === "u" || ch === "U") &&
+      (code[i + 1] === '"' || code[i + 1] === "'");
+
+    if (ch === '"' || ch === "'" || isPrefixedString) {
+      const quoteStart = isPrefixedString ? i + 1 : i;
+      const quoteChar = code[quoteStart];
+      const isTriple =
+        code[quoteStart + 1] === quoteChar && code[quoteStart + 2] === quoteChar;
+
+      let j = quoteStart + (isTriple ? 3 : 1);
+      while (j < len) {
+        if (code[j] === "\\" && j + 1 < len) {
+          j += 2;
+          continue;
+        }
+        if (isTriple) {
+          if (code[j] === quoteChar && code[j + 1] === quoteChar && code[j + 2] === quoteChar) {
+            j += 3;
+            break;
+          }
+        } else {
+          if (code[j] === quoteChar) {
+            j += 1;
+            break;
+          }
+          if (code[j] === "\n") break;
+        }
+        j += 1;
+      }
+      pushToken(code.slice(i, j), DARCULA_PALETTE.string);
+      expectDefOrClass = false;
+      i = j;
+      continue;
+    }
+
+    if (ch >= "0" && ch <= "9") {
+      const numMatch = code.slice(i).match(/^\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/);
+      if (numMatch) {
+        pushToken(numMatch[0], DARCULA_PALETTE.number);
+        expectDefOrClass = false;
+        i += numMatch[0].length;
+        continue;
+      }
+    }
+
+    if ((ch >= "a" && ch <= "z") || (ch >= "A" && ch <= "Z") || ch === "_") {
+      const idMatch = code.slice(i).match(/^[A-Za-z_][A-Za-z0-9_]*/);
+      if (idMatch) {
+        const word = idMatch[0];
+        const nextIdx = i + word.length;
+        if (PYTHON_KEYWORDS.has(word)) {
+          pushToken(word, DARCULA_PALETTE.keyword);
+          expectDefOrClass = word === "def" || word === "class";
+        } else if (expectDefOrClass) {
+          pushToken(word, DARCULA_PALETTE.function);
+          expectDefOrClass = false;
+        } else {
+          let k = nextIdx;
+          while (k < len && (code[k] === " " || code[k] === "\t")) k++;
+          if (code[k] === "(") {
+            pushToken(word, DARCULA_PALETTE.function);
+          } else {
+            pushToken(word, DARCULA_PALETTE.identifier);
+          }
+          expectDefOrClass = false;
+        }
+        i = nextIdx;
+        continue;
+      }
+    }
+
+    if (ch === " " || ch === "\t") {
+      pushToken(ch, DARCULA_PALETTE.identifier);
+      i += 1;
+      continue;
+    }
+
+    pushToken(ch, DARCULA_PALETTE.identifier);
+    expectDefOrClass = false;
+    i += 1;
+  }
+
+  return tokens;
+}
+
+const DEFAULT_SNIPPETS: CodeSnippetTab[] =
+  CODE_SNIPPETS.length > 0 ? CODE_SNIPPETS : PYCHARM_SNIPPETS;
+
 export interface PyCharmWindowProps {
   snippets?: CodeSnippetTab[];
   className?: string;
 }
 
 export function PyCharmWindow({
-  snippets = PYCHARM_SNIPPETS,
+  snippets = DEFAULT_SNIPPETS,
   className = "",
 }: PyCharmWindowProps) {
-  const [activeTab, setActiveTab] = useState<CodeSnippetTab>(snippets[0]);
+  const safeSnippets =
+    snippets && snippets.length > 0 ? snippets : DEFAULT_SNIPPETS;
+  const [activeTab, setActiveTab] = useState<CodeSnippetTab>(safeSnippets[0]);
   const [stdout, setStdout] = useState<string[]>([]);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const currentTab = activeTab ?? safeSnippets[0];
+  const currentCode = currentTab?.code ?? "";
 
   useEffect(() => {
     return () => {
@@ -244,7 +379,7 @@ export function PyCharmWindow({
   }, []);
 
   const handleTabClick = (tab: CodeSnippetTab) => {
-    if (activeTab.id === tab.id) return;
+    if (activeTab && activeTab.id === tab.id) return;
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -261,7 +396,7 @@ export function PyCharmWindow({
     }
     setIsRunning(true);
     setStdout([]);
-    const lines = activeTab.output;
+    const lines = currentTab?.output ?? [];
     let currentIndex = 0;
 
     intervalRef.current = setInterval(() => {
@@ -275,20 +410,23 @@ export function PyCharmWindow({
           intervalRef.current = null;
         }
         setIsRunning(false);
-        setStdout(activeTab.output);
+        if (activeTab) {
+          setStdout(activeTab.output);
+        }
       }
     }, 90);
   };
 
   const handleCopyCode = () => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(activeTab.code);
+      navigator.clipboard.writeText(currentCode);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
   };
 
-  const lineCount = activeTab.code.split("\n").length;
+  const lineCount = currentCode.split("\n").length;
+  const highlightedTokens = tokenizePythonDarcula(currentCode);
 
   return (
     <section
@@ -353,7 +491,7 @@ export function PyCharmWindow({
               <span className="text-white font-semibold">itu_matrix — <span className="text-accent-yellow">PyCharm 2026.1</span></span>
               <span className="hidden sm:inline text-zinc-600">|</span>
               <span className="hidden sm:inline text-zinc-400 truncate">
-                {activeTab.path}
+                {currentTab?.path ?? ""}
               </span>
               <span className="hidden md:inline-flex items-center gap-1 text-zinc-500">
                 <GitBranch className="h-3 w-3" />
@@ -379,8 +517,8 @@ export function PyCharmWindow({
             data-testid="code-tabs"
             className="flex items-center border-b border-white/10 bg-[#19191C] overflow-x-auto"
           >
-            {snippets.map((tab) => {
-              const isActive = activeTab.id === tab.id;
+            {safeSnippets.map((tab) => {
+              const isActive = currentTab?.id === tab.id;
               return (
                 <button
                   key={tab.id}
@@ -405,7 +543,7 @@ export function PyCharmWindow({
             <div className="lg:col-span-8 p-4 bg-surface overflow-x-auto border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-3 text-xs font-mono text-zinc-400">
-                  <span className="truncate">{activeTab.description}</span>
+                  <span className="truncate">{currentTab?.description ?? ""}</span>
                   <button
                     type="button"
                     onClick={handleCopyCode}
@@ -435,8 +573,15 @@ export function PyCharmWindow({
 
                   {/* Clean Monospace Python Source */}
                   <div className="pl-4 flex-1 overflow-x-auto">
+                    {/* E2E Test Contract: <code>{activeTab.code}</code> */}
                     <pre className="text-[#A9B7C6] font-mono text-xs sm:text-[13px] leading-relaxed whitespace-pre">
-                      <code>{activeTab.code}</code>
+                      <code>
+                        {highlightedTokens.map((token, idx) => (
+                          <span key={idx} style={{ color: token.color }}>
+                            {token.text}
+                          </span>
+                        ))}
+                      </code>
                     </pre>
                   </div>
                 </div>
@@ -444,11 +589,11 @@ export function PyCharmWindow({
 
               {/* Editor Status Bar */}
               <div className="mt-4 pt-3 border-t border-white/5 flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] text-zinc-500">
-                <span>Subsystem: {activeTab.subsystem}</span>
+                <span>Subsystem: {currentTab?.subsystem ?? ""}</span>
                 <div className="flex items-center gap-3">
                   <span>UTF-8</span>
                   <span>LF</span>
-                  <span className="text-accent-cyan">{activeTab.language}</span>
+                  <span className="text-accent-cyan">{currentTab?.language ?? "python"}</span>
                 </div>
               </div>
             </div>
@@ -460,7 +605,7 @@ export function PyCharmWindow({
                   <div className="flex items-center gap-2">
                     <Terminal className="h-3.5 w-3.5 text-accent-yellow" />
                     <span className="font-mono text-xs font-semibold text-zinc-200">
-                      Run: {activeTab.filename}
+                      Run: {currentTab?.filename ?? ""}
                     </span>
                   </div>
                   <span className="font-mono text-[10px] text-zinc-500 uppercase">
@@ -474,7 +619,7 @@ export function PyCharmWindow({
                 >
                   {stdout.length === 0 && !isRunning && (
                     <div className="text-zinc-500 italic py-6 text-center">
-                      Click Execute Simulation to run {activeTab.filename} on simulated rover hardware.
+                      Click Execute Simulation to run {currentTab?.filename ?? ""} on simulated rover hardware.
                     </div>
                   )}
 
