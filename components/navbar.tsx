@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Terminal, Menu, X } from "lucide-react";
@@ -20,17 +20,53 @@ export function Navbar({
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeHref, setActiveHref] = useState<string>("#overview");
+  const pendingScrollIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
+    pendingScrollIdRef.current = null;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        pendingScrollIdRef.current = null;
         setIsOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
+
+  const handleMobileAnchorClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+    afterAction?: () => void
+  ) => {
+    e.preventDefault();
+    const targetId = href.startsWith("#") ? href.slice(1) : href;
+    pendingScrollIdRef.current = targetId;
+    setActiveHref(href);
+    if (afterAction) afterAction();
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", href);
+    }
+    setIsOpen(false);
+  };
+
+  const handleDrawerExitComplete = () => {
+    const targetId = pendingScrollIdRef.current;
+    pendingScrollIdRef.current = null;
+    if (!targetId) return;
+
+    const targetEl = document.getElementById(targetId);
+    if (!targetEl) return;
+
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const behavior: ScrollBehavior = prefersReducedMotion ? "auto" : "smooth";
+    targetEl.scrollIntoView({ behavior, block: "start" });
+  };
 
   return (
     <header
@@ -41,6 +77,13 @@ export function Navbar({
         {/* Brand Logo */}
         <Link
           href="#overview"
+          onClick={(e) => {
+            if (isOpen) {
+              handleMobileAnchorClick(e, "#overview");
+            } else {
+              setActiveHref("#overview");
+            }
+          }}
           className="flex items-center gap-2.5 group shrink-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
         >
           <div className="h-8 w-8 sm:h-9 sm:w-9 rounded border border-white/20 bg-surface flex items-center justify-center font-mono font-black text-accent-yellow shadow-[0_0_10px_rgba(252,237,58,0.2)]">
@@ -203,7 +246,7 @@ export function Navbar({
       </div>
 
       {/* Mobile Drawer */}
-      <AnimatePresence initial={false}>
+      <AnimatePresence initial={false} onExitComplete={handleDrawerExitComplete}>
         {isOpen && (
           <motion.div
             key="mobile-nav-drawer"
@@ -213,7 +256,7 @@ export function Navbar({
             animate={{ opacity: 1, height: "auto", y: 0 }}
             exit={{ opacity: 0, height: 0, y: -6 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
-            className="md:hidden overflow-hidden border-b border-white/10 bg-canvas/95 backdrop-blur-xl px-4 pt-2 pb-6 space-y-3 z-50"
+            className="md:hidden absolute inset-x-0 top-full overflow-hidden border-b border-white/10 bg-canvas/95 backdrop-blur-xl px-4 pt-2 pb-6 space-y-3 z-50"
           >
             <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-white/5">
               <div className={`flex items-center gap-2 px-2.5 py-1 rounded-full border ${isOnline ? "border-emerald-500/30 bg-emerald-950/20 text-emerald-400" : "border-zinc-500/30 bg-zinc-950/20 text-zinc-400"} font-mono text-xs`}>
@@ -222,10 +265,7 @@ export function Navbar({
               </div>
               <a
                 href="#telemetry"
-                onClick={() => {
-                  if (onLaunchConsole) onLaunchConsole();
-                  setIsOpen(false);
-                }}
+                onClick={(e) => handleMobileAnchorClick(e, "#telemetry", onLaunchConsole)}
                 className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-accent-yellow text-canvas font-mono text-xs font-semibold"
               >
                 <Terminal className="w-3 h-3" />
@@ -236,70 +276,49 @@ export function Navbar({
             <div className="grid grid-cols-2 gap-2">
               <a
                 href="#overview"
-                onClick={() => {
-                  setActiveHref("#overview");
-                  setIsOpen(false);
-                }}
+                onClick={(e) => handleMobileAnchorClick(e, "#overview")}
                 className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
               >
                 Overview
               </a>
               <a
                 href="#rover-3d"
-                onClick={() => {
-                  setActiveHref("#rover-3d");
-                  setIsOpen(false);
-                }}
+                onClick={(e) => handleMobileAnchorClick(e, "#rover-3d")}
                 className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
               >
                 3D Rover
               </a>
               <a
                 href="#ide"
-                onClick={() => {
-                  setActiveHref("#ide");
-                  setIsOpen(false);
-                }}
+                onClick={(e) => handleMobileAnchorClick(e, "#ide")}
                 className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
               >
                 PyCharm IDE
               </a>
               <a
                 href="#subteams"
-                onClick={() => {
-                  setActiveHref("#subteams");
-                  setIsOpen(false);
-                }}
+                onClick={(e) => handleMobileAnchorClick(e, "#subteams")}
                 className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
               >
                 Subteams
               </a>
               <a
                 href="#telemetry"
-                onClick={() => {
-                  setActiveHref("#telemetry");
-                  setIsOpen(false);
-                }}
+                onClick={(e) => handleMobileAnchorClick(e, "#telemetry")}
                 className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
               >
                 Telemetry
               </a>
               <a
                 href="#competitions"
-                onClick={() => {
-                  setActiveHref("#competitions");
-                  setIsOpen(false);
-                }}
+                onClick={(e) => handleMobileAnchorClick(e, "#competitions")}
                 className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
               >
                 Competitions
               </a>
               <a
                 href="#sponsors"
-                onClick={() => {
-                  setActiveHref("#sponsors");
-                  setIsOpen(false);
-                }}
+                onClick={(e) => handleMobileAnchorClick(e, "#sponsors")}
                 className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
               >
                 Sponsors
