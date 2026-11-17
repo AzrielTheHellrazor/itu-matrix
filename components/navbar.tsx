@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { Terminal, Menu, X } from "lucide-react";
 
 export interface NavbarProps {
@@ -18,6 +19,7 @@ export function Navbar({
   className = "",
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeHref, setActiveHref] = useState<string>("#overview");
 
   useEffect(() => {
     if (!isOpen) return;
@@ -58,44 +60,100 @@ export function Navbar({
         <nav className="hidden md:flex flex-wrap items-center justify-center min-w-0 flex-1 gap-x-0.5 lg:gap-x-1 gap-y-1">
           <a
             href="#overview"
-            className="px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-all whitespace-nowrap"
+            onClick={() => setActiveHref("#overview")}
+            className="relative px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap"
           >
+            {activeHref === "#overview" && (
+              <motion.span
+                layoutId="navbar-active-pill"
+                transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                className="pointer-events-none absolute inset-0 -z-10 rounded bg-white/10 border border-white/15"
+              />
+            )}
             Overview
           </a>
           <a
             href="#rover-3d"
-            className="px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-all whitespace-nowrap"
+            onClick={() => setActiveHref("#rover-3d")}
+            className="relative px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap"
           >
+            {activeHref === "#rover-3d" && (
+              <motion.span
+                layoutId="navbar-active-pill"
+                transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                className="pointer-events-none absolute inset-0 -z-10 rounded bg-white/10 border border-white/15"
+              />
+            )}
             3D Rover
           </a>
           <a
             href="#ide"
-            className="px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-all whitespace-nowrap"
+            onClick={() => setActiveHref("#ide")}
+            className="relative px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap"
           >
+            {activeHref === "#ide" && (
+              <motion.span
+                layoutId="navbar-active-pill"
+                transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                className="pointer-events-none absolute inset-0 -z-10 rounded bg-white/10 border border-white/15"
+              />
+            )}
             IDE
           </a>
           <a
             href="#subteams"
-            className="px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-all whitespace-nowrap"
+            onClick={() => setActiveHref("#subteams")}
+            className="relative px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap"
           >
+            {activeHref === "#subteams" && (
+              <motion.span
+                layoutId="navbar-active-pill"
+                transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                className="pointer-events-none absolute inset-0 -z-10 rounded bg-white/10 border border-white/15"
+              />
+            )}
             Subteams
           </a>
           <a
             href="#telemetry"
-            className="px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-all whitespace-nowrap"
+            onClick={() => setActiveHref("#telemetry")}
+            className="relative px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap"
           >
+            {activeHref === "#telemetry" && (
+              <motion.span
+                layoutId="navbar-active-pill"
+                transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                className="pointer-events-none absolute inset-0 -z-10 rounded bg-white/10 border border-white/15"
+              />
+            )}
             Telemetry
           </a>
           <a
             href="#competitions"
-            className="px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-all whitespace-nowrap"
+            onClick={() => setActiveHref("#competitions")}
+            className="relative px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap"
           >
+            {activeHref === "#competitions" && (
+              <motion.span
+                layoutId="navbar-active-pill"
+                transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                className="pointer-events-none absolute inset-0 -z-10 rounded bg-white/10 border border-white/15"
+              />
+            )}
             Competitions
           </a>
           <a
             href="#sponsors"
-            className="px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-all whitespace-nowrap"
+            onClick={() => setActiveHref("#sponsors")}
+            className="relative px-1.5 lg:px-2.5 py-1 rounded text-[clamp(10px,0.72rem,12.5px)] font-mono font-medium text-zinc-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap"
           >
+            {activeHref === "#sponsors" && (
+              <motion.span
+                layoutId="navbar-active-pill"
+                transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                className="pointer-events-none absolute inset-0 -z-10 rounded bg-white/10 border border-white/15"
+              />
+            )}
             Sponsors
           </a>
         </nav>
@@ -115,15 +173,17 @@ export function Navbar({
           </div>
 
           {/* Console CTA Button */}
-          <a
+          <motion.a
             href="#telemetry"
             data-testid="header-cta-console"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={onLaunchConsole}
-            className="inline-flex items-center gap-1.5 px-2.5 lg:px-3.5 py-1.5 rounded bg-accent-yellow text-canvas font-mono font-semibold text-[clamp(11px,0.75rem,13px)] hover:bg-accent-yellow/90 hover:shadow-[0_0_12px_rgba(252,237,58,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-all whitespace-nowrap shrink-0"
+            className="inline-flex items-center gap-1.5 px-2.5 lg:px-3.5 py-1.5 rounded bg-accent-yellow text-canvas font-mono font-semibold text-[clamp(11px,0.75rem,13px)] hover:bg-accent-yellow/90 hover:shadow-[0_0_12px_rgba(252,237,58,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan transition-colors whitespace-nowrap shrink-0"
           >
             <Terminal className="w-3.5 h-3.5" />
             <span>Launch Console</span>
-          </a>
+          </motion.a>
         </div>
 
         {/* Mobile Hamburger Button */}
@@ -143,83 +203,111 @@ export function Navbar({
       </div>
 
       {/* Mobile Drawer */}
-      {isOpen && (
-        <div
-          id="mobile-nav-drawer"
-          data-testid="mobile-nav-drawer"
-          className="md:hidden border-b border-white/10 bg-canvas/95 backdrop-blur-xl px-4 pt-2 pb-6 space-y-3 z-50 animate-in fade-in slide-in-from-top-2 duration-200"
-        >
-          <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-white/5">
-            <div className={`flex items-center gap-2 px-2.5 py-1 rounded-full border ${isOnline ? "border-emerald-500/30 bg-emerald-950/20 text-emerald-400" : "border-zinc-500/30 bg-zinc-950/20 text-zinc-400"} font-mono text-xs`}>
-              <span className={`h-2 w-2 rounded-full ${isOnline ? "bg-emerald-500 animate-pulse" : "bg-zinc-500"}`}></span>
-              <span>{statusText}</span>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            key="mobile-nav-drawer"
+            id="mobile-nav-drawer"
+            data-testid="mobile-nav-drawer"
+            initial={{ opacity: 0, height: 0, y: -6 }}
+            animate={{ opacity: 1, height: "auto", y: 0 }}
+            exit={{ opacity: 0, height: 0, y: -6 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="md:hidden overflow-hidden border-b border-white/10 bg-canvas/95 backdrop-blur-xl px-4 pt-2 pb-6 space-y-3 z-50"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-white/5">
+              <div className={`flex items-center gap-2 px-2.5 py-1 rounded-full border ${isOnline ? "border-emerald-500/30 bg-emerald-950/20 text-emerald-400" : "border-zinc-500/30 bg-zinc-950/20 text-zinc-400"} font-mono text-xs`}>
+                <span className={`h-2 w-2 rounded-full ${isOnline ? "bg-emerald-500 animate-pulse" : "bg-zinc-500"}`}></span>
+                <span>{statusText}</span>
+              </div>
+              <a
+                href="#telemetry"
+                onClick={() => {
+                  if (onLaunchConsole) onLaunchConsole();
+                  setIsOpen(false);
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-accent-yellow text-canvas font-mono text-xs font-semibold"
+              >
+                <Terminal className="w-3 h-3" />
+                Launch Console
+              </a>
             </div>
-            <a
-              href="#telemetry"
-              onClick={() => {
-                if (onLaunchConsole) onLaunchConsole();
-                setIsOpen(false);
-              }}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-accent-yellow text-canvas font-mono text-xs font-semibold"
-            >
-              <Terminal className="w-3 h-3" />
-              Launch Console
-            </a>
-          </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            <a
-              href="#overview"
-              onClick={() => setIsOpen(false)}
-              className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
-            >
-              Overview
-            </a>
-            <a
-              href="#rover-3d"
-              onClick={() => setIsOpen(false)}
-              className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
-            >
-              3D Rover
-            </a>
-            <a
-              href="#ide"
-              onClick={() => setIsOpen(false)}
-              className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
-            >
-              PyCharm IDE
-            </a>
-            <a
-              href="#subteams"
-              onClick={() => setIsOpen(false)}
-              className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
-            >
-              Subteams
-            </a>
-            <a
-              href="#telemetry"
-              onClick={() => setIsOpen(false)}
-              className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
-            >
-              Telemetry
-            </a>
-            <a
-              href="#competitions"
-              onClick={() => setIsOpen(false)}
-              className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
-            >
-              Competitions
-            </a>
-            <a
-              href="#sponsors"
-              onClick={() => setIsOpen(false)}
-              className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
-            >
-              Sponsors
-            </a>
-          </div>
-        </div>
-      )}
+            <div className="grid grid-cols-2 gap-2">
+              <a
+                href="#overview"
+                onClick={() => {
+                  setActiveHref("#overview");
+                  setIsOpen(false);
+                }}
+                className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                Overview
+              </a>
+              <a
+                href="#rover-3d"
+                onClick={() => {
+                  setActiveHref("#rover-3d");
+                  setIsOpen(false);
+                }}
+                className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                3D Rover
+              </a>
+              <a
+                href="#ide"
+                onClick={() => {
+                  setActiveHref("#ide");
+                  setIsOpen(false);
+                }}
+                className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                PyCharm IDE
+              </a>
+              <a
+                href="#subteams"
+                onClick={() => {
+                  setActiveHref("#subteams");
+                  setIsOpen(false);
+                }}
+                className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                Subteams
+              </a>
+              <a
+                href="#telemetry"
+                onClick={() => {
+                  setActiveHref("#telemetry");
+                  setIsOpen(false);
+                }}
+                className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                Telemetry
+              </a>
+              <a
+                href="#competitions"
+                onClick={() => {
+                  setActiveHref("#competitions");
+                  setIsOpen(false);
+                }}
+                className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                Competitions
+              </a>
+              <a
+                href="#sponsors"
+                onClick={() => {
+                  setActiveHref("#sponsors");
+                  setIsOpen(false);
+                }}
+                className="px-3 py-2 rounded font-mono text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                Sponsors
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

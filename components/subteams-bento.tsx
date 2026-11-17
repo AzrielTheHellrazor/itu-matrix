@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { Cpu, Cog, Zap, FlaskConical, Users, ArrowUpRight } from "lucide-react";
 
 interface SubteamBentoItem {
@@ -144,24 +145,34 @@ export function SubteamsBento() {
           data-testid="subteams-bento"
           className="grid grid-cols-1 md:grid-cols-3 gap-6"
         >
-          {SUBTEAMS.map((team) => {
+          {SUBTEAMS.map((team, idx) => {
             const Icon = team.icon;
             const isHovered = spotlight?.id === team.id;
 
             return (
-              <div
+              <motion.div
                 key={team.id}
                 data-testid="subteam-card"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 24,
+                  delay: idx * 0.06,
+                }}
+                whileHover={{ y: -4, scale: 1.01 }}
                 onMouseMove={(e) => handleMouseMove(e, team.id)}
                 onMouseLeave={() => setSpotlight(null)}
-                className={`group relative rounded-xl border border-white/10 bg-surface p-6 sm:p-8 overflow-hidden transition-all duration-300 hover:border-white/25 shadow-xl ${team.colSpan}`}
+                className={`group relative rounded-xl border border-white/10 bg-surface overflow-hidden hover:border-white/25 shadow-xl ${team.colSpan}`}
                 style={{
                   backgroundImage: isHovered
                     ? `radial-gradient(360px circle at ${spotlight.x}px ${spotlight.y}px, ${team.accentGlow}, transparent 65%)`
                     : undefined,
                 }}
               >
-                <div className="relative z-10 flex flex-col justify-between h-full">
+                <div className="relative z-10 flex flex-col justify-between h-full p-6 sm:p-8 transition-all duration-300">
                   <div>
                     <div className="flex items-center justify-between mb-4">
                       <div className="h-10 w-10 rounded-lg border border-white/10 bg-canvas flex items-center justify-center group-hover:border-accent-yellow/40 transition-colors">
@@ -206,7 +217,7 @@ export function SubteamsBento() {
                     ))}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

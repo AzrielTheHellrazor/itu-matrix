@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Terminal, Send, Trash2, Cpu, Radio, Battery, Compass } from "lucide-react";
 import { createTelemetrySession, CommandExecutionResult } from "@/data/telemetry-commands";
 
@@ -151,8 +152,12 @@ export function TelemetryConsole() {
         </div>
 
         {/* Monospace CLI Terminal */}
-        <div
+        <motion.div
           data-testid="telemetry-terminal"
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: "some" }}
+          transition={{ duration: 0.45 }}
           onClick={() => inputRef.current?.focus()}
           className="rounded-xl border border-white/10 bg-canvas shadow-2xl overflow-hidden flex flex-col h-[500px]"
         >
@@ -193,7 +198,13 @@ export function TelemetryConsole() {
             </div>
 
             {history.map((record, index) => (
-              <div key={index} className="space-y-1">
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.18 }}
+                className="space-y-1"
+              >
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-accent-yellow font-bold">
                     matrix@itu-rover
@@ -226,7 +237,7 @@ export function TelemetryConsole() {
                     );
                   })}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
 
@@ -286,7 +297,7 @@ export function TelemetryConsole() {
               <span className="hidden sm:inline">Run</span>
             </button>
           </form>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

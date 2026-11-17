@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
+import { MotionProvider } from "@/components/motion-provider";
 import { Navbar } from "@/components/navbar";
 import { SponsorsFooter } from "@/components/sponsors-footer";
 import "./globals.css";
@@ -73,11 +74,13 @@ export default function RootLayout({
     <html lang="en" className="dark scroll-smooth overflow-x-hidden">
       <body className={`${jetbrainsMono.variable} min-h-screen bg-canvas text-white antialiased overflow-x-clip selection:bg-accent-yellow selection:text-black`}>
         <div className="flex min-h-screen flex-col w-full overflow-x-clip">
-          <Navbar />
-          <main className="flex-1 w-full max-w-7xl mx-auto flex flex-col">
-            {children}
-          </main>
-          <SponsorsFooter />
+          <MotionProvider>
+            <Navbar />
+            <main className="flex-1 w-full max-w-7xl mx-auto flex flex-col">
+              {children}
+            </main>
+            <SponsorsFooter />
+          </MotionProvider>
         </div>
       </body>
     </html>

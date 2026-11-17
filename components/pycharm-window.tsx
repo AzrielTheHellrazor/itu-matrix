@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Play, Terminal, Copy, Check, FileCode2, GitBranch } from "lucide-react";
 import { CodeSnippetTab, CODE_SNIPPETS, DARCULA_PALETTE } from "@/data/code-snippets";
 
@@ -487,8 +488,12 @@ export function PyCharmWindow({
         </div>
 
         {/* PyCharm IDE Window Frame */}
-        <div
+        <motion.div
           data-testid="pycharm-window"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: "some" }}
+          transition={{ duration: 0.45 }}
           className="rounded-xl border border-white/10 bg-surface shadow-2xl overflow-hidden"
         >
           {/* Window Chrome Title Bar */}
@@ -538,12 +543,19 @@ export function PyCharmWindow({
                   key={tab.id}
                   type="button"
                   onClick={() => handleTabClick(tab)}
-                  className={`flex items-center gap-2 px-4 py-2.5 border-r border-white/10 font-mono text-xs whitespace-nowrap transition-colors ${
+                  className={`relative flex items-center gap-2 px-4 py-2.5 border-r border-white/10 font-mono text-xs whitespace-nowrap transition-colors ${
                     isActive
-                      ? "bg-surface text-white border-t-2 border-t-accent-yellow font-semibold"
+                      ? "bg-surface text-white font-semibold"
                       : "text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
                   }`}
                 >
+                  {isActive && (
+                    <motion.span
+                      layoutId="pycharm-active-tab"
+                      transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                      className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-accent-yellow"
+                    />
+                  )}
                   <FileCode2 className="h-3.5 w-3.5 text-accent-cyan" />
                   <span>{tab.filename}</span>
                 </button>
@@ -572,33 +584,41 @@ export function PyCharmWindow({
                   </button>
                 </div>
 
-                <div className="flex font-mono text-xs sm:text-[13px] leading-relaxed">
-                  {/* Line Number Gutter */}
-                  <div
-                    aria-hidden="true"
-                    className="select-none text-right pr-4 border-r border-white/10 text-[#808080]"
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentTab?.id ?? "tab"}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.16 }}
+                    className="flex font-mono text-xs sm:text-[13px] leading-relaxed"
                   >
-                    {Array.from({ length: lineCount }, (_, idx) => (
-                      <div key={idx} className="leading-relaxed">
-                        {idx + 1}
-                      </div>
-                    ))}
-                  </div>
+                    {/* Line Number Gutter */}
+                    <div
+                      aria-hidden="true"
+                      className="select-none text-right pr-4 border-r border-white/10 text-[#808080]"
+                    >
+                      {Array.from({ length: lineCount }, (_, idx) => (
+                        <div key={idx} className="leading-relaxed">
+                          {idx + 1}
+                        </div>
+                      ))}
+                    </div>
 
-                  {/* Clean Monospace Python Source */}
-                  <div className="pl-4 flex-1 min-w-0 overflow-x-auto">
-                    {/* E2E Test Contract: <code>{activeTab.code}</code> */}
-                    <pre className="text-[#A9B7C6] font-mono text-xs sm:text-[13px] leading-relaxed whitespace-pre">
-                      <code>
-                        {highlightedTokens.map((token, idx) => (
-                          <span key={idx} style={{ color: token.color }}>
-                            {token.text}
-                          </span>
-                        ))}
-                      </code>
-                    </pre>
-                  </div>
-                </div>
+                    {/* Clean Monospace Python Source */}
+                    <div className="pl-4 flex-1 min-w-0 overflow-x-auto">
+                      <pre className="text-[#A9B7C6] font-mono text-xs sm:text-[13px] leading-relaxed whitespace-pre">
+                        <code>
+                          {highlightedTokens.map((token, idx) => (
+                            <span key={idx} style={{ color: token.color }}>
+                              {token.text}
+                            </span>
+                          ))}
+                        </code>
+                      </pre>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
 
               {/* Editor Status Bar */}
@@ -640,8 +660,11 @@ export function PyCharmWindow({
                   {stdout.map((line, idx) => {
                     const isExit = line.includes("Process finished with exit code 0");
                     return (
-                      <div
-                        key={idx}
+                      <motion.div
+                        key={`${currentTab?.id ?? "tab"}-${idx}`}
+                        initial={{ opacity: 0, x: -6 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.14 }}
                         className={`text-[11px] leading-snug break-words ${
                           isExit
                             ? "text-emerald-400 font-bold pt-2"
@@ -649,7 +672,7 @@ export function PyCharmWindow({
                         }`}
                       >
                         {line}
-                      </div>
+                      </motion.div>
                     );
                   })}
                 </div>
@@ -667,7 +690,7 @@ export function PyCharmWindow({
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

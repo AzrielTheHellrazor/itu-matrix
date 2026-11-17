@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 
 interface SponsorItem {
@@ -148,12 +149,22 @@ export function SponsorsFooter() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {SPONSORS.map((sp, idx) => (
-              <a
-                key={idx}
+              <motion.a
+                key={sp.name}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{
+                  duration: 0.32,
+                  delay: idx * 0.035,
+                  ease: "easeOut",
+                }}
+                whileHover={{ y: -3, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 href={sp.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group rounded-lg border border-white/10 bg-surface p-4 flex flex-col justify-between hover:border-accent-yellow/40 hover:bg-white/5 transition-all duration-300"
+                className="group rounded-lg border border-white/10 bg-surface p-4 flex flex-col justify-between hover:border-accent-yellow/40 hover:bg-white/5 transition-colors duration-300"
               >
                 <div>
                   <span className="font-mono text-xs font-bold text-white group-hover:text-accent-yellow transition-colors block">
@@ -167,14 +178,18 @@ export function SponsorsFooter() {
                   <span className="truncate">{sp.category}</span>
                   <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                 </div>
-              </a>
+              </motion.a>
             ))}
           </div>
         </div>
 
         {/* ITU Institutional Governance Banner */}
-        <div
+        <motion.div
           data-testid="footer-itu-banner"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.4 }}
           className="rounded-xl border border-white/10 bg-surface/60 p-6 sm:p-8 mb-12"
         >
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -212,7 +227,7 @@ export function SponsorsFooter() {
               </cite>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Social Links & Copyright */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t border-white/10">

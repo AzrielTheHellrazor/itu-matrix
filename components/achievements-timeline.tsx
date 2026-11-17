@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { Trophy, MapPin } from "lucide-react";
 
 export interface TimelineAchievement {
@@ -123,7 +124,18 @@ export function AchievementsTimeline() {
           className="relative border-l border-white/10 ml-4 md:ml-32 space-y-10 pb-4"
         >
           {ACHIEVEMENTS.map((item, idx) => (
-            <div key={idx} className="relative pl-6 md:pl-10 group">
+            <motion.div
+              key={item.year}
+              initial={{ opacity: 0, x: -16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{
+                duration: 0.38,
+                delay: Math.min(idx * 0.05, 0.25),
+                ease: "easeOut",
+              }}
+              className="relative pl-6 md:pl-10 group"
+            >
               {/* Desktop Year Label */}
               <div className="hidden md:block absolute -left-28 top-1 font-mono text-sm font-bold text-zinc-400 group-hover:text-accent-yellow transition-colors text-right w-20">
                 {item.year}
@@ -138,7 +150,11 @@ export function AchievementsTimeline() {
               </div>
 
               {/* Milestone Card */}
-              <div className="rounded-xl border border-white/10 bg-surface p-6 group-hover:border-accent-yellow/40 transition-all duration-300 shadow-lg">
+              <motion.div
+                whileHover={{ x: 4 }}
+                transition={{ type: "spring", stiffness: 340, damping: 26 }}
+                className="rounded-xl border border-white/10 bg-surface p-6 group-hover:border-accent-yellow/40 transition-colors duration-300 shadow-lg"
+              >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
                   <div className="flex items-center gap-2.5 flex-wrap">
                     <span className="md:hidden font-mono text-xs font-bold text-accent-yellow">
@@ -177,8 +193,8 @@ export function AchievementsTimeline() {
                   </span>
                   <span className="text-zinc-400">{item.competition}</span>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           ))}
         </div>
       </div>
