@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Play, Terminal, Copy, Check, FileCode2, GitBranch } from "lucide-react";
 import { CodeSnippetTab, CODE_SNIPPETS, DARCULA_PALETTE } from "@/data/code-snippets";
 
@@ -366,6 +366,7 @@ export function PyCharmWindow({
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const currentTab = activeTab ?? safeSnippets[0];
   const currentCode = currentTab?.code ?? "";
@@ -374,6 +375,9 @@ export function PyCharmWindow({
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+      }
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
       }
     };
   }, []);
@@ -421,12 +425,18 @@ export function PyCharmWindow({
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       navigator.clipboard.writeText(currentCode);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+      copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
     }
   };
 
   const lineCount = currentCode.split("\n").length;
-  const highlightedTokens = tokenizePythonDarcula(currentCode);
+  const highlightedTokens = useMemo(
+    () => tokenizePythonDarcula(currentCode),
+    [currentCode]
+  );
 
   return (
     <section
@@ -478,7 +488,7 @@ export function PyCharmWindow({
           className="rounded-xl border border-white/10 bg-surface shadow-2xl overflow-hidden"
         >
           {/* Window Chrome Title Bar */}
-          <div className="h-11 bg-bg-toolbar border-b border-white/10 px-4 flex items-center justify-between gap-3 select-none">
+          <div className="min-h-11 py-1.5 sm:py-0 bg-bg-toolbar border-b border-white/10 px-3 sm:px-4 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 sm:gap-3 select-none">
             {/* macOS Window Controls */}
             <div className="flex items-center gap-2 shrink-0">
               <span className="h-3 w-3 rounded-full bg-[#FF5F56] inline-block border border-black/20" />
@@ -487,7 +497,7 @@ export function PyCharmWindow({
             </div>
 
             {/* Project Breadcrumb & PyCharm Title */}
-            <div className="font-mono text-xs text-zinc-400 flex items-center gap-2 truncate">
+            <div className="min-w-0 font-mono text-xs text-zinc-400 flex items-center gap-2 truncate">
               <span className="text-white font-semibold">itu_matrix — <span className="text-accent-yellow">PyCharm 2026.1</span></span>
               <span className="hidden sm:inline text-zinc-600">|</span>
               <span className="hidden sm:inline text-zinc-400 truncate">
@@ -505,7 +515,7 @@ export function PyCharmWindow({
               data-testid="run-simulation-btn"
               onClick={handleRunSimulation}
               disabled={isRunning}
-              className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-semibold transition-colors disabled:opacity-50"
+              className="shrink-0 inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 text-[11px] sm:text-xs font-mono font-semibold transition-colors disabled:opacity-50"
             >
               <Play className="h-3 w-3 fill-emerald-400" />
               <span>{isRunning ? "Running..." : "Execute Simulation"}</span>
@@ -572,7 +582,7 @@ export function PyCharmWindow({
                   </div>
 
                   {/* Clean Monospace Python Source */}
-                  <div className="pl-4 flex-1 overflow-x-auto">
+                  <div className="pl-4 flex-1 min-w-0 overflow-x-auto">
                     {/* E2E Test Contract: <code>{activeTab.code}</code> */}
                     <pre className="text-[#A9B7C6] font-mono text-xs sm:text-[13px] leading-relaxed whitespace-pre">
                       <code>

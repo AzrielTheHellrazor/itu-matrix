@@ -21,7 +21,7 @@ export function Hero({ className = "" }: HeroProps) {
         {/* JetBrains Style Mission Status Pill Badge */}
         <div
           data-testid="hero-status-pill"
-          className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-white/10 bg-surface/80 backdrop-blur-md text-xs font-mono text-zinc-300 shadow-[0_0_15px_rgba(255,255,255,0.05)] mb-6 hover:border-accent-yellow/40 transition-colors"
+          className="inline-flex flex-wrap justify-center max-w-full text-center items-center gap-x-2.5 gap-y-1 px-4 py-1.5 rounded-full border border-white/10 bg-surface/80 backdrop-blur-md text-xs font-mono text-zinc-300 shadow-[0_0_15px_rgba(255,255,255,0.05)] mb-6 hover:border-accent-yellow/40 transition-colors"
         >
           <span className="h-2 w-2 rounded-full bg-accent-yellow animate-pulse" />
           <span className="font-semibold text-accent-yellow">URC 2026 // ACTIVE MISSION</span>
@@ -35,7 +35,7 @@ export function Hero({ className = "" }: HeroProps) {
           className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-zinc-100 to-zinc-400 mb-6 max-w-4xl leading-[1.1]"
         >
           Engineered for the Uncharted:
-          <span className="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-accent-yellow via-accent-purple to-accent-cyan">
+          <span className="block mt-2 pb-1 bg-clip-text text-transparent bg-gradient-to-r from-accent-yellow via-accent-purple to-accent-cyan">
             Autonomous Robotics by Istanbul Technical University
           </span>
           <span className="sr-only">AUTONOMOUS PLANETARY ROVER</span>
@@ -65,7 +65,7 @@ export function Hero({ className = "" }: HeroProps) {
         </blockquote>
 
         {/* Action CTAs with Hover Glow */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 mb-16">
+        <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-4 mb-16">
           <a
             href="#rover-3d"
             data-testid="hero-cta-inspect-3d"

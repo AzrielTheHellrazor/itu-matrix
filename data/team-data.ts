@@ -634,7 +634,7 @@ export const HERO_DATA: HeroData = {
   ],
   primaryCta: {
     text: "Inspect Rover 3D",
-    href: "#rover-studio",
+    href: "#rover-3d",
     testId: "hero-cta-inspect-3d",
   },
   secondaryCta: {

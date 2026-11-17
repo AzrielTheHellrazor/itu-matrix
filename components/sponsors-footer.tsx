@@ -224,7 +224,7 @@ export function SponsorsFooter() {
               href="https://github.com/itu-rover"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-zinc-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/5"
+              className="text-zinc-400 hover:text-white transition-colors p-2.5 rounded-full hover:bg-white/5"
               aria-label="ITU Rover GitHub"
             >
               <GithubIcon />
@@ -233,7 +233,7 @@ export function SponsorsFooter() {
               href="https://www.instagram.com/itu.roverteam/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-zinc-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/5"
+              className="text-zinc-400 hover:text-white transition-colors p-2.5 rounded-full hover:bg-white/5"
               aria-label="ITU Rover Instagram"
             >
               <InstagramIcon />
@@ -242,7 +242,7 @@ export function SponsorsFooter() {
               href="https://www.linkedin.com/company/ituroverteam"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-zinc-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/5"
+              className="text-zinc-400 hover:text-white transition-colors p-2.5 rounded-full hover:bg-white/5"
               aria-label="ITU Rover LinkedIn"
             >
               <LinkedinIcon />
@@ -251,7 +251,7 @@ export function SponsorsFooter() {
               href="https://twitter.com/ituroverteam"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-zinc-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/5"
+              className="text-zinc-400 hover:text-white transition-colors p-2.5 rounded-full hover:bg-white/5"
               aria-label="ITU Rover Twitter"
             >
               <TwitterIcon />
@@ -260,7 +260,7 @@ export function SponsorsFooter() {
               href="https://www.youtube.com/@ITURoverTeam"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-zinc-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/5"
+              className="text-zinc-400 hover:text-white transition-colors p-2.5 rounded-full hover:bg-white/5"
               aria-label="ITU Rover YouTube"
             >
               <YoutubeIcon />

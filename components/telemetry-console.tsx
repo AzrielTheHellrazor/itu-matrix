@@ -47,7 +47,10 @@ export function TelemetryConsole() {
 
   const executeCommand = (rawCommand: string) => {
     const commandText = rawCommand.trim();
-    if (!commandText) return;
+    if (!commandText) {
+      setInputVal("");
+      return;
+    }
 
     const res: CommandExecutionResult = session.execute(commandText);
     if (res.status === "cleared") {
@@ -254,7 +257,7 @@ export function TelemetryConsole() {
           >
             <div className="flex items-center gap-1 font-mono text-xs select-none shrink-0">
               <span className="text-accent-yellow font-bold">
-                matrix@itu-rover
+                matrix<span className="hidden sm:inline">@itu-rover</span>
               </span>
               <span className="text-zinc-500">:</span>
               <span className="text-accent-cyan">~</span>
@@ -265,7 +268,10 @@ export function TelemetryConsole() {
               data-testid="console-input"
               type="text"
               value={inputVal}
-              onChange={(e) => setInputVal(e.target.value)}
+              onChange={(e) => {
+                setInputVal(e.target.value);
+                setHistoryPointer(-1);
+              }}
               onKeyDown={handleKeyDown}
               placeholder="Type command (telemetry, arm test, subsystems, help)..."
               className="flex-1 min-w-0 bg-transparent font-mono text-xs sm:text-sm text-white focus:outline-none placeholder:text-zinc-600"
