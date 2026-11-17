@@ -95,6 +95,7 @@ export function Hero() {
           >
             <div
               data-testid="crystal-lattice-stage"
+              data-lattice-type={activeLattice}
               className="relative h-[380px] sm:h-[460px] lg:h-[500px] w-full rounded-xl border border-white/[0.08] bg-surface overflow-hidden"
             >
               {/* Single restrained ambient radial highlight */}

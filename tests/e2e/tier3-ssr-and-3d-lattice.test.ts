@@ -146,7 +146,9 @@ describe("Tier 3: Built SSR HTML, React SSR Markup, 3D Lattice Math & WebGL Safe
     );
     const root = parseHtml(html);
     expect(root.findByTestId("hero-section")).not.toBeNull();
-    expect(root.findByTestId("crystal-lattice-stage")).not.toBeNull();
+    const stage = root.findByTestId("crystal-lattice-stage");
+    expect(stage).not.toBeNull();
+    expect(stage?.getAttribute("data-lattice-type")).toBe("BCC");
     expect(root.findByTestId("lattice-btn-BCC")).not.toBeNull();
     expect(root.findByTestId("lattice-btn-FCC")).not.toBeNull();
     expect(root.findByTestId("lattice-btn-HCP")).not.toBeNull();
@@ -222,11 +224,14 @@ describe("Tier 3: Built SSR HTML, React SSR Markup, 3D Lattice Math & WebGL Safe
     }
   });
 
-  test("T3.10: getLatticeSpec resolves all 3 crystal systems cleanly", () => {
+  test("T3.10: getLatticeSpec and getLatticeGeometry resolve BCC, FCC, HCP and consistently fall back to BCC", () => {
     for (const sys of ["BCC", "FCC", "HCP"] as LatticeSystem[]) {
       const spec = getLatticeSpec(sys);
       expect(spec.id).toBe(sys);
     }
+    const unexpected = "SC" as unknown as LatticeSystem;
+    expect(getLatticeSpec(unexpected).id).toBe("BCC");
+    expect(getLatticeGeometry(unexpected)).toEqual(getLatticeGeometry("BCC"));
   });
 
   test("T3.11: CrystalLatticeCanvas enforces OrbitControls bounds, touch rotation, and offline studio lighting", () => {
@@ -279,5 +284,60 @@ describe("Tier 3: Built SSR HTML, React SSR Markup, 3D Lattice Math & WebGL Safe
     expect(model).toContain("useReducedMotion");
     expect(model).toContain("if (!groupRef.current || isPaused || prefersReducedMotion) return;");
     expect(model).not.toContain("useGLTF");
+  });
+
+  test("T3.15: CrystalLatticeModel R3F primitives contain ZERO hyphenated DOM data-* props (prevents R3F commitUpdate crash)", () => {
+    const model = loadProjectSource("components/crystal-lattice-model.tsx");
+    const r3fPrimitives = [
+      "group",
+      "mesh",
+      "sphereGeometry",
+      "cylinderGeometry",
+      "meshStandardMaterial",
+    ];
+
+    const extractOpeningTags = (source: string, tagName: string): string[] => {
+      const tags: string[] = [];
+      const matcher = new RegExp(`<${tagName}(?=[\\s>/])`, "g");
+      let match: RegExpExecArray | null;
+      while ((match = matcher.exec(source)) !== null) {
+        let idx = match.index + match[0].length;
+        let braceDepth = 0;
+        let quote: '"' | "'" | "`" | null = null;
+        while (idx < source.length) {
+          const ch = source[idx];
+          const prev = idx > 0 ? source[idx - 1] : "";
+          if (quote) {
+            if (ch === quote && prev !== "\\") quote = null;
+          } else {
+            if (ch === '"' || ch === "'" || ch === "`") {
+              quote = ch;
+            } else if (ch === "{") {
+              braceDepth++;
+            } else if (ch === "}") {
+              braceDepth = Math.max(0, braceDepth - 1);
+            } else if (ch === ">" && braceDepth === 0) {
+              tags.push(source.slice(match.index, idx + 1));
+              break;
+            }
+          }
+          idx++;
+        }
+      }
+      return tags;
+    };
+
+    let inspectedCount = 0;
+    for (const primitive of r3fPrimitives) {
+      const openingTags = extractOpeningTags(model, primitive);
+      inspectedCount += openingTags.length;
+      for (const tag of openingTags) {
+        expect(tag).not.toMatch(/\sdata-[a-z0-9-]+\s*=/i);
+      }
+    }
+
+    expect(inspectedCount).toBeGreaterThanOrEqual(7);
+    expect(model).toContain("name={`lattice-model-${latticeType}`}");
+    expect(model).not.toContain("data-testid=");
   });
 });

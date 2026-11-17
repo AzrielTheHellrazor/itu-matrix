@@ -96,7 +96,7 @@ export function CrystalLatticeModel({
   });
 
   return (
-    <group ref={groupRef} data-testid={`lattice-model-${latticeType}`}>
+    <group ref={groupRef} name={`lattice-model-${latticeType}`}>
       {latticeData.atoms.map((atom, idx) => {
         const isSolute = atom.role === "solute";
         return (

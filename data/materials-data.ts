@@ -139,33 +139,6 @@ function buildCubeEdges(s: number): BondEdge[] {
 export function getLatticeGeometry(latticeType: LatticeSystem): LatticeGeometryData {
   const s = 0.85;
 
-  if (latticeType === "BCC") {
-    const corners: [number, number, number][] = [];
-    for (const x of [-s, s]) {
-      for (const y of [-s, s]) {
-        for (const z of [-s, s]) {
-          corners.push([x, y, z]);
-        }
-      }
-    }
-
-    const atoms: AtomNode[] = [
-      ...corners.map((position): AtomNode => ({ position, role: "host" })),
-      { position: [0, 0, 0], role: "solute" },
-    ];
-
-    const edges: BondEdge[] = [
-      ...buildCubeEdges(s),
-      ...corners.map((corner): BondEdge => ({
-        start: [0, 0, 0],
-        end: corner,
-        kind: "bond",
-      })),
-    ];
-
-    return { atoms, edges };
-  }
-
   if (latticeType === "FCC") {
     const corners: [number, number, number][] = [];
     for (const x of [-s, s]) {
@@ -209,59 +182,87 @@ export function getLatticeGeometry(latticeType: LatticeSystem): LatticeGeometryD
     };
   }
 
-  // HCP: Top & bottom hexagonal basal planes + 3 AB-stacking mid-plane atoms
-  const r = 0.95;
-  const rm = 0.55;
-  const h = 0.85;
+  if (latticeType === "HCP") {
+    // HCP: Top & bottom hexagonal basal planes + 3 AB-stacking mid-plane atoms
+    const r = 0.95;
+    const rm = 0.55;
+    const h = 0.85;
 
-  const topRing: [number, number, number][] = [];
-  const bottomRing: [number, number, number][] = [];
-  for (let k = 0; k < 6; k++) {
-    const angle = (k * Math.PI) / 3;
-    const x = Number((r * Math.cos(angle)).toFixed(4));
-    const z = Number((r * Math.sin(angle)).toFixed(4));
-    topRing.push([x, h, z]);
-    bottomRing.push([x, -h, z]);
+    const topRing: [number, number, number][] = [];
+    const bottomRing: [number, number, number][] = [];
+    for (let k = 0; k < 6; k++) {
+      const angle = (k * Math.PI) / 3;
+      const x = Number((r * Math.cos(angle)).toFixed(4));
+      const z = Number((r * Math.sin(angle)).toFixed(4));
+      topRing.push([x, h, z]);
+      bottomRing.push([x, -h, z]);
+    }
+
+    const topCenter: [number, number, number] = [0, h, 0];
+    const bottomCenter: [number, number, number] = [0, -h, 0];
+
+    const midAngles = [Math.PI / 6, (5 * Math.PI) / 6, (3 * Math.PI) / 2];
+    const midAtoms: [number, number, number][] = midAngles.map((angle) => [
+      Number((rm * Math.cos(angle)).toFixed(4)),
+      0,
+      Number((rm * Math.sin(angle)).toFixed(4)),
+    ]);
+
+    const atoms: AtomNode[] = [
+      ...topRing.map((position): AtomNode => ({ position, role: "host" })),
+      { position: topCenter, role: "host" },
+      ...bottomRing.map((position): AtomNode => ({ position, role: "host" })),
+      { position: bottomCenter, role: "host" },
+      ...midAtoms.map((position): AtomNode => ({ position, role: "solute" })),
+    ];
+
+    const edges: BondEdge[] = [];
+    for (let k = 0; k < 6; k++) {
+      const next = (k + 1) % 6;
+      edges.push({ start: topRing[k], end: topRing[next], kind: "cell" });
+      edges.push({ start: bottomRing[k], end: bottomRing[next], kind: "cell" });
+      edges.push({ start: topRing[k], end: bottomRing[k], kind: "cell" });
+      edges.push({ start: topCenter, end: topRing[k], kind: "bond" });
+      edges.push({ start: bottomCenter, end: bottomRing[k], kind: "bond" });
+    }
+
+    midAtoms.forEach((mid, idx) => {
+      const v1 = idx * 2;
+      const v2 = (idx * 2 + 1) % 6;
+      edges.push({ start: mid, end: topCenter, kind: "bond" });
+      edges.push({ start: mid, end: bottomCenter, kind: "bond" });
+      edges.push({ start: mid, end: topRing[v1], kind: "bond" });
+      edges.push({ start: mid, end: topRing[v2], kind: "bond" });
+      edges.push({ start: mid, end: bottomRing[v1], kind: "bond" });
+      edges.push({ start: mid, end: bottomRing[v2], kind: "bond" });
+    });
+
+    return { atoms, edges };
   }
 
-  const topCenter: [number, number, number] = [0, h, 0];
-  const bottomCenter: [number, number, number] = [0, -h, 0];
-
-  const midAngles = [Math.PI / 6, (5 * Math.PI) / 6, (3 * Math.PI) / 2];
-  const midAtoms: [number, number, number][] = midAngles.map((angle) => [
-    Number((rm * Math.cos(angle)).toFixed(4)),
-    0,
-    Number((rm * Math.sin(angle)).toFixed(4)),
-  ]);
+  // Default / BCC (consistent with getLatticeSpec fallback to BCC)
+  const corners: [number, number, number][] = [];
+  for (const x of [-s, s]) {
+    for (const y of [-s, s]) {
+      for (const z of [-s, s]) {
+        corners.push([x, y, z]);
+      }
+    }
+  }
 
   const atoms: AtomNode[] = [
-    ...topRing.map((position): AtomNode => ({ position, role: "host" })),
-    { position: topCenter, role: "host" },
-    ...bottomRing.map((position): AtomNode => ({ position, role: "host" })),
-    { position: bottomCenter, role: "host" },
-    ...midAtoms.map((position): AtomNode => ({ position, role: "solute" })),
+    ...corners.map((position): AtomNode => ({ position, role: "host" })),
+    { position: [0, 0, 0], role: "solute" },
   ];
 
-  const edges: BondEdge[] = [];
-  for (let k = 0; k < 6; k++) {
-    const next = (k + 1) % 6;
-    edges.push({ start: topRing[k], end: topRing[next], kind: "cell" });
-    edges.push({ start: bottomRing[k], end: bottomRing[next], kind: "cell" });
-    edges.push({ start: topRing[k], end: bottomRing[k], kind: "cell" });
-    edges.push({ start: topCenter, end: topRing[k], kind: "bond" });
-    edges.push({ start: bottomCenter, end: bottomRing[k], kind: "bond" });
-  }
-
-  midAtoms.forEach((mid, idx) => {
-    const v1 = idx * 2;
-    const v2 = (idx * 2 + 1) % 6;
-    edges.push({ start: mid, end: topCenter, kind: "bond" });
-    edges.push({ start: mid, end: bottomCenter, kind: "bond" });
-    edges.push({ start: mid, end: topRing[v1], kind: "bond" });
-    edges.push({ start: mid, end: topRing[v2], kind: "bond" });
-    edges.push({ start: mid, end: bottomRing[v1], kind: "bond" });
-    edges.push({ start: mid, end: bottomRing[v2], kind: "bond" });
-  });
+  const edges: BondEdge[] = [
+    ...buildCubeEdges(s),
+    ...corners.map((corner): BondEdge => ({
+      start: [0, 0, 0],
+      end: corner,
+      kind: "bond",
+    })),
+  ];
 
   return { atoms, edges };
 }
