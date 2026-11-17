@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B0B0E"/>
+      <stop offset="100%" stop-color="#151518"/>
+    </linearGradient>
+    <linearGradient id="neon" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FCED3A"/>
+      <stop offset="50%" stop-color="#AF52DE"/>
+      <stop offset="100%" stop-color="#21D4FD"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g stroke="rgba(255,255,255,0.06)" stroke-width="1">
+    <path d="M0 105 H1200 M0 210 H1200 M0 315 H1200 M0 420 H1200 M0 525 H1200"/>
+    <path d="M150 0 V630 M300 0 V630 M450 0 V630 M600 0 V630 M750 0 V630 M900 0 V630 M1050 0 V630"/>
+  </g>
+  <rect x="64" y="64" width="1072" height="502" rx="24" fill="rgba(25,25,28,0.88)" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+  <rect x="112" y="114" width="64" height="64" rx="12" fill="#151518" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+  <text x="144" y="159" text-anchor="middle" fill="#FCED3A" font-family="monospace" font-size="38" font-weight="900">M</text>
+  <text x="196" y="142" fill="#FFFFFF" font-family="monospace" font-size="26" font-weight="700">ITU MATRIX</text>
+  <text x="196" y="170" fill="#21D4FD" font-family="monospace" font-size="16" letter-spacing="3">URC 2026 // ACTIVE MISSION</text>
+  <text x="112" y="278" fill="#FFFFFF" font-family="sans-serif" font-size="56" font-weight="800">Autonomous Planetary Rover</text>
+  <text x="112" y="348" fill="url(#neon)" font-family="sans-serif" font-size="44" font-weight="800">Istanbul Technical University</text>
+  <text x="112" y="418" fill="#9DA0A8" font-family="monospace" font-size="22">URC World 3rd  |  ERC Silver  |  6-DOF Manipulator  |  ROS 2 Nav2</text>
+  <rect x="112" y="468" width="976" height="4" rx="2" fill="url(#neon)"/>
+  <text x="112" y="516" fill="#FCED3A" font-family="monospace" font-size="18">"Somewhere, something incredible is waiting to be known." — Carl Sagan</text>
+</svg>
