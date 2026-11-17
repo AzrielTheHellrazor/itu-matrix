@@ -17,22 +17,23 @@ export function Hero({ className = "" }: HeroProps) {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(175,82,222,0.15),transparent_70%)] pointer-events-none" />
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
 
-      <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center">
+      <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center">
         {/* JetBrains Style Mission Status Pill Badge */}
         <div
           data-testid="hero-status-pill"
-          className="inline-flex flex-wrap justify-center max-w-full text-center items-center gap-x-2.5 gap-y-1 px-4 py-1.5 rounded-full border border-white/10 bg-surface/80 backdrop-blur-md text-xs font-mono text-zinc-300 shadow-[0_0_15px_rgba(255,255,255,0.05)] mb-6 hover:border-accent-yellow/40 transition-colors"
+          className="inline-flex flex-wrap justify-center max-w-full min-w-0 break-words [overflow-wrap:anywhere] text-center items-center gap-x-2.5 gap-y-1 px-3 sm:px-4 py-1.5 rounded-full border border-white/10 bg-surface/80 backdrop-blur-md text-[clamp(10px,0.75rem,13px)] font-mono text-zinc-300 shadow-[0_0_15px_rgba(255,255,255,0.05)] mb-6 hover:border-accent-yellow/40 transition-colors"
         >
           <span className="h-2 w-2 rounded-full bg-accent-yellow animate-pulse" />
           <span className="font-semibold text-accent-yellow">URC 2026 // ACTIVE MISSION</span>
-          <span className="text-zinc-600">|</span>
+          <span className="text-zinc-400">|</span>
           <span className="tracking-wide">ITU MATRIX // AUTONOMOUS PLANETARY ROVER</span>
         </div>
 
         {/* Electric Neon Gradient Mask H1 */}
         <h1
           data-testid="hero-headline"
-          className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-zinc-100 to-zinc-400 mb-6 max-w-4xl leading-[1.1]"
+          style={{ fontSize: "clamp(1.5rem, 8.5vw, 4.5rem)" }}
+          className="text-4xl sm:text-6xl md:text-7xl max-w-full min-w-0 break-words [overflow-wrap:anywhere] font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-zinc-100 to-zinc-400 mb-6 leading-[1.1]"
         >
           Engineered for the Uncharted:
           <span className="block mt-2 pb-1 bg-clip-text text-transparent bg-gradient-to-r from-accent-yellow via-accent-purple to-accent-cyan">

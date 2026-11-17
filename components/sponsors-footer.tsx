@@ -20,7 +20,7 @@ const SPONSORS: SponsorItem[] = [
   {
     name: "Türkiye'nin Makinecileri",
     tier: "Platinum Sponsor",
-    url: "https://www.makineciler.org",
+    url: "https://www.turkishmachinery.org",
     category: "Machinery Exporters",
   },
   {
@@ -163,7 +163,7 @@ export function SponsorsFooter() {
                     {sp.tier}
                   </span>
                 </div>
-                <div className="mt-4 pt-2 border-t border-white/5 flex items-center justify-between text-[10px] text-zinc-500">
+                <div className="mt-4 pt-2 border-t border-white/5 flex items-center justify-between text-[10px] text-zinc-400">
                   <span className="truncate">{sp.category}</span>
                   <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                 </div>
@@ -267,7 +267,7 @@ export function SponsorsFooter() {
             </a>
           </div>
 
-          <div className="font-mono text-xs text-zinc-500 text-center sm:text-right">
+          <div className="font-mono text-xs text-zinc-400 text-center sm:text-right">
             © 2026 ITU Matrix Autonomous Rover Team. All rights reserved.
           </div>
         </div>

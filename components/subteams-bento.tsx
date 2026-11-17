@@ -152,10 +152,9 @@ export function SubteamsBento() {
               <div
                 key={team.id}
                 data-testid="subteam-card"
-                tabIndex={0}
                 onMouseMove={(e) => handleMouseMove(e, team.id)}
                 onMouseLeave={() => setSpotlight(null)}
-                className={`group relative rounded-xl border border-white/10 bg-surface p-6 sm:p-8 overflow-hidden transition-all duration-300 hover:border-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-yellow/60 shadow-xl ${team.colSpan}`}
+                className={`group relative rounded-xl border border-white/10 bg-surface p-6 sm:p-8 overflow-hidden transition-all duration-300 hover:border-white/25 shadow-xl ${team.colSpan}`}
                 style={{
                   backgroundImage: isHovered
                     ? `radial-gradient(360px circle at ${spotlight.x}px ${spotlight.y}px, ${team.accentGlow}, transparent 65%)`
@@ -168,7 +167,7 @@ export function SubteamsBento() {
                       <div className="h-10 w-10 rounded-lg border border-white/10 bg-canvas flex items-center justify-center group-hover:border-accent-yellow/40 transition-colors">
                         <Icon className="h-5 w-5 text-accent-yellow" />
                       </div>
-                      <span className="font-mono text-[10px] tracking-wider text-zinc-500 uppercase">
+                      <span className="font-mono text-[10px] tracking-wider text-zinc-400 uppercase">
                         {team.leadRole}
                       </span>
                     </div>

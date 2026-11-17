@@ -56,7 +56,7 @@ export class TelemetrySession {
           "  [PASS] J3 Elbow Pitch (-90° to +90°): OK",
           "  [PASS] J4 Wrist Pitch (-90° to +90°): OK",
           "  [PASS] J5 Wrist Roll (-180° to +180°): OK",
-          "  [PASS] J6 End-Effector Gripper (5.0kg Payload Capacity): READY",
+          "  [PASS] J6 End-Effector Gripper (3.5kg Payload Capacity): READY",
           "ARM STATUS: NOMINAL. Ready for sample manipulation.",
         ],
       };
@@ -149,7 +149,7 @@ export class TelemetrySession {
               "  [PASS] J3 Elbow Pitch (-90° to +90°): OK",
               "  [PASS] J4 Wrist Pitch (-90° to +90°): OK",
               "  [PASS] J5 Wrist Roll (-180° to +180°): OK",
-              "  [PASS] J6 End-Effector Gripper (5.0kg Payload Capacity): READY",
+              "  [PASS] J6 End-Effector Gripper (3.5kg Payload Capacity): READY",
               "ARM STATUS: NOMINAL. Ready for sample manipulation.",
             ],
           };

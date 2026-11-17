@@ -122,28 +122,28 @@ export function TelemetryConsole() {
             <div className="bg-surface border border-white/10 rounded-lg px-3 py-2 flex items-center gap-2.5">
               <Radio className="h-4 w-4 text-accent-cyan shrink-0" />
               <div className="font-mono">
-                <span className="text-zinc-500 block text-[10px]">RF LINK</span>
+                <span className="text-zinc-400 block text-[10px]">RF LINK</span>
                 <span className="text-white text-xs font-bold">5.8 GHz</span>
               </div>
             </div>
             <div className="bg-surface border border-white/10 rounded-lg px-3 py-2 flex items-center gap-2.5">
               <Battery className="h-4 w-4 text-emerald-400 shrink-0" />
               <div className="font-mono">
-                <span className="text-zinc-500 block text-[10px]">POWER BUS</span>
+                <span className="text-zinc-400 block text-[10px]">POWER BUS</span>
                 <span className="text-white text-xs font-bold">24.8V</span>
               </div>
             </div>
             <div className="bg-surface border border-white/10 rounded-lg px-3 py-2 flex items-center gap-2.5">
               <Cpu className="h-4 w-4 text-accent-purple shrink-0" />
               <div className="font-mono">
-                <span className="text-zinc-500 block text-[10px]">JETSON ORIN</span>
+                <span className="text-zinc-400 block text-[10px]">JETSON ORIN</span>
                 <span className="text-white text-xs font-bold">42.5°C</span>
               </div>
             </div>
             <div className="bg-surface border border-white/10 rounded-lg px-3 py-2 flex items-center gap-2.5">
               <Compass className="h-4 w-4 text-accent-yellow shrink-0" />
               <div className="font-mono">
-                <span className="text-zinc-500 block text-[10px]">GPS FIX</span>
+                <span className="text-zinc-400 block text-[10px]">GPS FIX</span>
                 <span className="text-white text-xs font-bold">MDRS Utah</span>
               </div>
             </div>
@@ -171,7 +171,7 @@ export function TelemetryConsole() {
                 setHistory([]);
                 setHistoryPointer(-1);
               }}
-              className="text-zinc-400 hover:text-white text-xs font-mono flex items-center gap-1.5 transition-colors"
+              className="min-h-[28px] min-w-[28px] p-1.5 rounded text-zinc-400 hover:text-white hover:bg-white/5 text-xs font-mono flex items-center justify-center gap-1.5 transition-colors"
               title="Clear screen buffer"
             >
               <Trash2 className="h-3.5 w-3.5" />
@@ -184,7 +184,7 @@ export function TelemetryConsole() {
             ref={scrollRef}
             className="flex-1 p-4 font-mono text-xs sm:text-sm text-zinc-300 overflow-y-auto space-y-3 bg-canvas"
           >
-            <div className="text-zinc-500 text-xs pb-2 border-b border-white/5">
+            <div className="text-zinc-400 text-xs pb-2 border-b border-white/5">
               <span>ITU Matrix Autonomous Telemetry Terminal [Build 2026.1]</span>
               <br />
               <span>
@@ -198,7 +198,7 @@ export function TelemetryConsole() {
                   <span className="text-accent-yellow font-bold">
                     matrix@itu-rover
                   </span>
-                  <span className="text-zinc-500">:</span>
+                  <span className="text-zinc-400">:</span>
                   <span className="text-accent-cyan">~</span>
                   <span className="text-zinc-400">$</span>
                   <span className="text-white font-semibold">{record.input}</span>
@@ -232,7 +232,7 @@ export function TelemetryConsole() {
 
           {/* Quick Command Chips */}
           <div className="px-4 py-2 bg-surface/60 border-t border-white/5 flex flex-wrap gap-2 items-center">
-            <span className="text-[10px] font-mono text-zinc-500 uppercase">
+            <span className="text-[10px] font-mono text-zinc-400 uppercase">
               Commands:
             </span>
             {QUICK_COMMANDS.map((cmd) => (
@@ -243,7 +243,7 @@ export function TelemetryConsole() {
                   e.stopPropagation();
                   executeCommand(cmd);
                 }}
-                className="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-accent-yellow border border-white/10 font-mono text-xs transition-colors"
+                className="min-h-[28px] px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-accent-yellow border border-white/10 font-mono text-xs transition-colors"
               >
                 {cmd}
               </button>
@@ -259,7 +259,7 @@ export function TelemetryConsole() {
               <span className="text-accent-yellow font-bold">
                 matrix<span className="hidden sm:inline">@itu-rover</span>
               </span>
-              <span className="text-zinc-500">:</span>
+              <span className="text-zinc-400">:</span>
               <span className="text-accent-cyan">~</span>
               <span className="text-zinc-400">$</span>
             </div>
@@ -274,7 +274,7 @@ export function TelemetryConsole() {
               }}
               onKeyDown={handleKeyDown}
               placeholder="Type command (telemetry, arm test, subsystems, help)..."
-              className="flex-1 min-w-0 bg-transparent font-mono text-xs sm:text-sm text-white focus:outline-none placeholder:text-zinc-600"
+              className="flex-1 min-w-0 bg-transparent font-mono text-xs sm:text-sm text-white focus:outline-none placeholder:text-zinc-400"
               autoComplete="off"
               spellCheck={false}
             />

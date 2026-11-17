@@ -156,7 +156,7 @@ function HotspotProjector({
   onProjectHotspot,
 }: {
   hotspots: RoverHotspot[];
-  onProjectHotspot: (id: string, x: number, y: number, visible: boolean) => void;
+  onProjectHotspot: (id: string, x: number, y: number, visible: boolean, canvasWidth: number) => void;
 }) {
   const scratchVecRef = useRef(new THREE.Vector3());
 
@@ -168,7 +168,7 @@ function HotspotProjector({
 
       const isBehindOrClipped = vec.z > 1 || vec.z < -1;
       if (isBehindOrClipped) {
-        onProjectHotspot(hs.id, 0, 0, false);
+        onProjectHotspot(hs.id, 0, 0, false, size.width);
         continue;
       }
 
@@ -177,7 +177,7 @@ function HotspotProjector({
       const inBounds =
         x >= -24 && x <= size.width + 24 && y >= -24 && y <= size.height + 24;
 
-      onProjectHotspot(hs.id, x, y, inBounds);
+      onProjectHotspot(hs.id, x, y, inBounds, size.width);
     }
   });
 
@@ -205,21 +205,51 @@ export function RoverCanvas({
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const isTransitioningRef = useRef<boolean>(false);
   const hotspotButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const hotspotTooltipRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const cleanupContextListenersRef = useRef<(() => void) | null>(null);
   const [contextLost, setContextLost] = useState<boolean>(false);
 
   const handleProjectHotspot = useCallback(
-    (id: string, x: number, y: number, visible: boolean) => {
+    (id: string, x: number, y: number, visible: boolean, canvasWidth: number) => {
       const el = hotspotButtonRefs.current[id];
       if (!el) return;
       if (!visible) {
         el.style.opacity = "0";
         el.style.pointerEvents = "none";
+        el.tabIndex = -1;
+        el.setAttribute("aria-hidden", "true");
         return;
       }
       el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%)`;
       el.style.opacity = "1";
       el.style.pointerEvents = "auto";
+      el.tabIndex = 0;
+      el.removeAttribute("aria-hidden");
+
+      const tip = hotspotTooltipRefs.current[id];
+      if (tip && canvasWidth > 0) {
+        const tipWidth = tip.offsetWidth || 156;
+        const margin = 8;
+        const pinHalf = 16;
+        if (x + pinHalf + 4 + tipWidth <= canvasWidth - margin) {
+          tip.style.left = "1.75rem";
+          tip.style.right = "auto";
+          tip.style.top = "50%";
+          tip.style.transform = "translateY(-50%)";
+        } else if (x - pinHalf - 4 - tipWidth >= margin) {
+          tip.style.left = "auto";
+          tip.style.right = "1.75rem";
+          tip.style.top = "50%";
+          tip.style.transform = "translateY(-50%)";
+        } else {
+          const pinLeft = x - (el.offsetWidth || 26) / 2;
+          const desiredScreenLeft = Math.max(margin, Math.min(canvasWidth - margin - tipWidth, x - tipWidth / 2));
+          tip.style.right = "auto";
+          tip.style.left = `${Math.round(desiredScreenLeft - pinLeft)}px`;
+          tip.style.top = "calc(100% + 4px)";
+          tip.style.transform = "translateY(0)";
+        }
+      }
     },
     []
   );
@@ -241,7 +271,7 @@ export function RoverCanvas({
         <span className="font-mono text-xs uppercase tracking-widest text-accent-cyan">
           {"// INITIALIZING 3D ROVER STUDIO"}
         </span>
-        <span className="font-mono text-[11px] text-zinc-500 mt-1">
+        <span className="font-mono text-[11px] text-zinc-400 mt-1">
           Mounting WebGL viewport & 5.8GHz telemetry link...
         </span>
       </div>
@@ -365,6 +395,8 @@ export function RoverCanvas({
                   e.stopPropagation();
                   onSelectHotspot(isSelected ? null : hs);
                 }}
+                tabIndex={-1}
+                aria-hidden="true"
                 style={{ left: 0, top: 0, opacity: 0, pointerEvents: "none" }}
                 className="group absolute flex items-center justify-center p-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-yellow rounded-full cursor-pointer transition-opacity duration-150"
                 aria-label={`Inspect ${hs.label}`}
@@ -386,6 +418,9 @@ export function RoverCanvas({
 
                 {/* Monospace Hover / Active Badge Pill */}
                 <div
+                  ref={(el) => {
+                    hotspotTooltipRefs.current[hs.id] = el;
+                  }}
                   className={`absolute left-7 top-1/2 -translate-y-1/2 whitespace-nowrap px-2.5 py-1 rounded bg-surface/90 border border-white/20 backdrop-blur-md text-[11px] font-mono tracking-wider shadow-xl pointer-events-none transition-all duration-200 ${
                     isSelected
                       ? "opacity-100 translate-x-0 border-accent-yellow/60 text-accent-yellow"

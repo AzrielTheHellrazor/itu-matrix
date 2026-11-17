@@ -24,7 +24,7 @@
   /* Typography Colors (High Contrast WCAG AAA Compliant) */
   --text-primary: #FFFFFF;
   --text-secondary: #9DA0A8;
-  --text-muted: #606366;
+  --text-muted: #8C919A;
 
   /* Frosted Glassmorphism & Border Highlights */
   --border-subtle: rgba(255, 255, 255, 0.1);
@@ -59,7 +59,7 @@
   --color-accent-emerald: #10B981;
   --color-accent-blue: #36A3F7;
 
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-mono: var(--font-jetbrains-mono), 'JetBrains Mono', ui-monospace, monospace;
 }
 
 /* Base resets & layout bounds */
@@ -80,7 +80,7 @@ body {
 
 /* Monospace font stack with resilient fallbacks */
 code, kbd, samp, pre, .font-mono {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', ui-monospace, monospace;
 }
 
 /* Glassmorphic UI utilities */
@@ -119,4 +119,19 @@ code, kbd, samp, pre, .font-mono {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #323238;
+}
+
+/* Reduced motion accessibility compliance */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

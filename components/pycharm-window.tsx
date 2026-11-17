@@ -232,7 +232,7 @@ const PYTHON_KEYWORDS = new Set([
   "yield", "lambda", "async", "await", "global", "nonlocal", "assert", "del",
 ]);
 
-function tokenizePythonDarcula(code: string): SyntaxToken[] {
+export function tokenizePythonDarcula(code: string): SyntaxToken[] {
   const tokens: SyntaxToken[] = [];
   const pushToken = (text: string, color: string) => {
     if (!text) return;
@@ -421,14 +421,18 @@ export function PyCharmWindow({
     }, 90);
   };
 
-  const handleCopyCode = () => {
-    if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(currentCode);
-      setCopied(true);
-      if (copyTimeoutRef.current) {
-        clearTimeout(copyTimeoutRef.current);
+  const handleCopyCode = async () => {
+    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(currentCode);
+        setCopied(true);
+        if (copyTimeoutRef.current) {
+          clearTimeout(copyTimeoutRef.current);
+        }
+        copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
+      } catch {
+        setCopied(false);
       }
-      copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -499,11 +503,11 @@ export function PyCharmWindow({
             {/* Project Breadcrumb & PyCharm Title */}
             <div className="min-w-0 font-mono text-xs text-zinc-400 flex items-center gap-2 truncate">
               <span className="text-white font-semibold">itu_matrix — <span className="text-accent-yellow">PyCharm 2026.1</span></span>
-              <span className="hidden sm:inline text-zinc-600">|</span>
+              <span className="hidden sm:inline text-zinc-400">|</span>
               <span className="hidden sm:inline text-zinc-400 truncate">
                 {currentTab?.path ?? ""}
               </span>
-              <span className="hidden md:inline-flex items-center gap-1 text-zinc-500">
+              <span className="hidden md:inline-flex items-center gap-1 text-zinc-400">
                 <GitBranch className="h-3 w-3" />
                 main
               </span>
@@ -557,7 +561,7 @@ export function PyCharmWindow({
                   <button
                     type="button"
                     onClick={handleCopyCode}
-                    className="shrink-0 ml-3 flex items-center gap-1 text-zinc-400 hover:text-white transition-colors"
+                    className="shrink-0 ml-3 min-h-[28px] px-2 py-1 rounded flex items-center gap-1 text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
                   >
                     {copied ? (
                       <Check className="h-3.5 w-3.5 text-emerald-400" />
@@ -598,7 +602,7 @@ export function PyCharmWindow({
               </div>
 
               {/* Editor Status Bar */}
-              <div className="mt-4 pt-3 border-t border-white/5 flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] text-zinc-500">
+              <div className="mt-4 pt-3 border-t border-white/5 flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] text-zinc-400">
                 <span>Subsystem: {currentTab?.subsystem ?? ""}</span>
                 <div className="flex items-center gap-3">
                   <span>UTF-8</span>
@@ -618,7 +622,7 @@ export function PyCharmWindow({
                       Run: {currentTab?.filename ?? ""}
                     </span>
                   </div>
-                  <span className="font-mono text-[10px] text-zinc-500 uppercase">
+                  <span className="font-mono text-[10px] text-zinc-400 uppercase">
                     stdout
                   </span>
                 </div>
@@ -628,7 +632,7 @@ export function PyCharmWindow({
                   className="font-mono text-xs space-y-1.5 max-h-[340px] overflow-y-auto pr-1"
                 >
                   {stdout.length === 0 && !isRunning && (
-                    <div className="text-zinc-500 italic py-6 text-center">
+                    <div className="text-zinc-400 italic py-6 text-center">
                       Click Execute Simulation to run {currentTab?.filename ?? ""} on simulated rover hardware.
                     </div>
                   )}
@@ -651,7 +655,7 @@ export function PyCharmWindow({
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between font-mono text-[10px] text-zinc-500">
+              <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between font-mono text-[10px] text-zinc-400">
                 <span>ROS 2 Humble Runtime</span>
                 <span className="text-emerald-400">
                   {stdout.some((l) => l.includes("exit code 0"))

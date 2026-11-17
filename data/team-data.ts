@@ -558,7 +558,7 @@ export const SOCIAL_LINKS: SocialLinks = {
   linkedin: "https://www.linkedin.com/company/ituroverteam",
   twitter: "https://twitter.com/ituroverteam",
   youtube: "https://www.youtube.com/@ITURoverTeam",
-  website: "https://www.rover.itu.edu.tr",
+  website: "https://github.com/itu-rover",
 };
 
 // ============================================================================

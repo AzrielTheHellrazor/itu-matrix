@@ -158,7 +158,7 @@ export function AchievementsTimeline() {
                   </div>
 
                   <div className="flex items-center gap-1.5 font-mono text-xs text-zinc-400">
-                    <MapPin className="h-3.5 w-3.5 text-zinc-500" />
+                    <MapPin className="h-3.5 w-3.5 text-zinc-400" />
                     <span>{item.location}</span>
                   </div>
                 </div>
@@ -171,7 +171,7 @@ export function AchievementsTimeline() {
                   {item.description}
                 </p>
 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pt-3 border-t border-white/5 font-mono text-xs text-zinc-500">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pt-3 border-t border-white/5 font-mono text-xs text-zinc-400">
                   <span>
                     Rover: <strong className="text-zinc-200">{item.rover}</strong>
                   </span>

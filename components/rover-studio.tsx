@@ -264,7 +264,7 @@ export function RoverStudio({ className = "" }: RoverStudioProps) {
                     <span className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]" />
                     <span className="w-2.5 h-2.5 rounded-full bg-[#27C93F]" />
                   </div>
-                  <span className="text-zinc-500 font-mono text-xs">|</span>
+                  <span className="text-zinc-400 font-mono text-xs">|</span>
                   <span className="font-mono text-xs text-zinc-300 tracking-wide truncate max-w-[180px]">
                     {activeHotspot
                       ? `matrix://${activeHotspot.id}.py`
@@ -276,7 +276,7 @@ export function RoverStudio({ className = "" }: RoverStudioProps) {
                   <button
                     type="button"
                     onClick={() => setActiveHotspot(null)}
-                    className="p-1 rounded text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
+                    className="min-h-[28px] min-w-[28px] p-1.5 flex items-center justify-center rounded text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
                     aria-label="Close Inspector"
                   >
                     <X className="w-3.5 h-3.5" />
@@ -308,14 +308,14 @@ export function RoverStudio({ className = "" }: RoverStudioProps) {
                   {/* Real-time Telemetry Status Bar */}
                   <div className="grid grid-cols-2 gap-2 p-3 rounded-xl border border-white/5 bg-canvas/60 font-mono text-xs">
                     <div>
-                      <span className="text-zinc-500 block text-[10px]">LINK STATUS</span>
+                      <span className="text-zinc-400 block text-[10px]">LINK STATUS</span>
                       <span className="text-emerald-400 font-bold flex items-center gap-1 mt-0.5">
                         <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                         NOMINAL
                       </span>
                     </div>
                     <div>
-                      <span className="text-zinc-500 block text-[10px]">BUS TELEMETRY</span>
+                      <span className="text-zinc-400 block text-[10px]">BUS TELEMETRY</span>
                       <span className="text-accent-cyan font-bold mt-0.5 block">24.2 V // OK</span>
                     </div>
                   </div>
@@ -376,7 +376,7 @@ export function RoverStudio({ className = "" }: RoverStudioProps) {
                           {getSubsystemIcon(hs.id)}
                           <span>{hs.label}</span>
                         </span>
-                        <ChevronRight className="w-3 h-3 text-zinc-500" />
+                        <ChevronRight className="w-3 h-3 text-zinc-400" />
                       </button>
                     ))}
                   </div>
