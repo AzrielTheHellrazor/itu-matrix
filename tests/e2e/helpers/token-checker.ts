@@ -1,10 +1,9 @@
 /**
  * tests/e2e/helpers/token-checker.ts
- * Design system, CSS variables, and Darcula token inspection utilities.
+ * Design system, CSS variables, and WCAG contrast inspection utilities.
  */
 
 import { readFileSync, existsSync } from "fs";
-import { resolve } from "path";
 import { ParsedNode } from "./dom-parser";
 
 export interface ColorTokenVerification {
@@ -21,19 +20,10 @@ export interface DesignSystemAudit {
 
 export const JETBRAINS_CORE_TOKENS: Record<string, string> = {
   "--bg-canvas": "#0B0B0E",
-  "--accent-yellow": "#FCED3A",
-  "--accent-purple": "#AF52DE",
+  "--bg-surface": "#111115",
   "--accent-cyan": "#21D4FD",
-  "--accent-pink": "#FF2A85",
-};
-
-export const DARCULA_SYNTAX_TOKENS: Record<string, string> = {
-  keyword: "#CC7832",
-  string: "#6A8759",
-  number: "#6897BB",
-  comment: "#808080",
-  identifier: "#A9B7C6",
-  function: "#FFC66D",
+  "--accent-purple": "#AF52DE",
+  "--accent-amber": "#F59E0B",
 };
 
 /**
@@ -54,7 +44,7 @@ export function extractCssVariables(cssContent: string): Map<string, string> {
 }
 
 /**
- * Validates that globals.css contains the required JetBrains PyCharm tokens.
+ * Validates that globals.css contains the required JetBrains PyCharm obsidian palette tokens.
  */
 export function auditGlobalsCss(cssPath: string): DesignSystemAudit {
   if (!existsSync(cssPath)) {
@@ -69,7 +59,11 @@ export function auditGlobalsCss(cssPath: string): DesignSystemAudit {
   const extracted = extractCssVariables(content);
 
   const missingTokens: string[] = [];
-  const mismatchedTokens: Array<{ token: string; expected: string; actual: string }> = [];
+  const mismatchedTokens: Array<{
+    token: string;
+    expected: string;
+    actual: string;
+  }> = [];
 
   for (const [token, expectedHex] of Object.entries(JETBRAINS_CORE_TOKENS)) {
     if (!extracted.has(token)) {
@@ -92,8 +86,11 @@ export function auditGlobalsCss(cssPath: string): DesignSystemAudit {
 /**
  * Verifies that a DOM node contains a set of expected Tailwind classes.
  */
-export function verifyTailwindClasses(node: ParsedNode, expectedClasses: string[]): { valid: boolean; missing: string[] } {
-  const missing = expectedClasses.filter(cls => !node.hasClass(cls));
+export function verifyTailwindClasses(
+  node: ParsedNode,
+  expectedClasses: string[]
+): { valid: boolean; missing: string[] } {
+  const missing = expectedClasses.filter((cls) => !node.hasClass(cls));
   return {
     valid: missing.length === 0,
     missing,
@@ -109,7 +106,8 @@ export function getRelativeLuminance(hex: string): number {
   const g = parseInt(clean.substring(2, 4), 16) / 255;
   const b = parseInt(clean.substring(4, 6), 16) / 255;
 
-  const toLinear = (c: number) => c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  const toLinear = (c: number) =>
+    c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
   const R = toLinear(r);
   const G = toLinear(g);
   const B = toLinear(b);

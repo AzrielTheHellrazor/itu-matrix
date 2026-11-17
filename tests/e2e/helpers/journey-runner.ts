@@ -4,17 +4,15 @@
  */
 
 import { ParsedNode } from "./dom-parser";
+import type { LatticeSystem } from "../../../data/materials-data";
 
 export interface JourneyState {
   currentUrl: string;
   viewport: { width: number; height: number };
-  activeHotspotId?: string | null;
-  activeCodeTab?: string;
-  terminalHistory?: string[];
-  wireframeMode?: boolean;
+  activeLattice?: LatticeSystem;
   renderedHtml?: string;
   dom?: ParsedNode;
-  variables: Record<string, any>;
+  variables: Record<string, unknown>;
 }
 
 export interface JourneyStep {
@@ -28,18 +26,23 @@ export class JourneyHarness {
   readonly journeyName: string;
   readonly persona: string;
   private state: JourneyState;
-  private breadcrumbs: Array<{ step: string; timestamp: number; durationMs: number }> = [];
+  private breadcrumbs: Array<{
+    step: string;
+    timestamp: number;
+    durationMs: number;
+  }> = [];
 
-  constructor(journeyName: string, persona: string, initialViewport = { width: 1440, height: 900 }) {
+  constructor(
+    journeyName: string,
+    persona: string,
+    initialViewport = { width: 1440, height: 900 }
+  ) {
     this.journeyName = journeyName;
     this.persona = persona;
     this.state = {
       currentUrl: "/",
       viewport: initialViewport,
-      activeHotspotId: null,
-      activeCodeTab: "autonomous_nav.py",
-      terminalHistory: [],
-      wireframeMode: false,
+      activeLattice: "BCC",
       variables: {},
     };
   }
@@ -63,7 +66,8 @@ export class JourneyHarness {
         timestamp: Date.now(),
         durationMs,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
       const dump = {
         failedJourney: this.journeyName,
         persona: this.persona,
@@ -73,13 +77,13 @@ export class JourneyHarness {
         stateSnapshot: {
           currentUrl: this.state.currentUrl,
           viewport: this.state.viewport,
-          activeHotspot: this.state.activeHotspotId,
-          activeCodeTab: this.state.activeCodeTab,
-          wireframeMode: this.state.wireframeMode,
+          activeLattice: this.state.activeLattice,
         },
-        originalError: err.message,
+        originalError: message,
       };
-      throw new Error(`Journey step failed: ${step.name}\n${JSON.stringify(dump, null, 2)}`);
+      throw new Error(
+        `Journey step failed: ${step.name}\n${JSON.stringify(dump, null, 2)}`
+      );
     }
   }
 
@@ -90,6 +94,10 @@ export class JourneyHarness {
   }
 }
 
-export function createJourneyHarness(journeyName: string, persona: string, viewport?: { width: number; height: number }): JourneyHarness {
+export function createJourneyHarness(
+  journeyName: string,
+  persona: string,
+  viewport?: { width: number; height: number }
+): JourneyHarness {
   return new JourneyHarness(journeyName, persona, viewport);
 }
