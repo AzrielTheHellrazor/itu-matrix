@@ -148,7 +148,7 @@ describe("Tier 3: Built SSR HTML, React SSR Markup, 3D Lattice Math & WebGL Safe
     expect(root.findByTestId("hero-section")).not.toBeNull();
     const stage = root.findByTestId("crystal-lattice-stage");
     expect(stage).not.toBeNull();
-    expect(stage?.getAttribute("data-lattice-type")).toBe("BCC");
+    expect(stage?.getAttribute("data-lattice-type")).toBe("MFC");
     expect(root.findByTestId("lattice-btn-BCC")).not.toBeNull();
     expect(root.findByTestId("lattice-btn-FCC")).not.toBeNull();
     expect(root.findByTestId("lattice-btn-HCP")).not.toBeNull();

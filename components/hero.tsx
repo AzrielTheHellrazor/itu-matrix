@@ -3,14 +3,11 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { Pause, Play, RotateCcw } from "lucide-react";
+import { Layers, Pause, Play, RotateCcw } from "lucide-react";
 import { useSitePreferences } from "@/components/site-preferences";
 import { TRANSLATIONS } from "@/data/i18n";
-import {
-  LATTICE_SPECS,
-  getLatticeSpec,
-  type LatticeSystem,
-} from "@/data/materials-data";
+import { LATTICE_SPECS, getLatticeSpec } from "@/data/materials-data";
+import type { StageModelType } from "@/components/crystal-lattice-model";
 
 const CrystalLatticeViewport = dynamic(
   () => import("@/components/crystal-lattice-viewport"),
@@ -23,21 +20,33 @@ const CrystalLatticeViewport = dynamic(
       >
         <div className="h-6 w-6 rounded-full border border-white/15 border-t-accent-cyan animate-spin mb-3" />
         <span className="font-mono text-xs tracking-widest uppercase text-zinc-400">
-          Loading Unit Cell
+          Loading 3D Stage
         </span>
       </div>
     ),
   }
 );
 
+const STAGE_MODES: StageModelType[] = ["MFC", "BCC", "FCC", "HCP"];
+
 export function Hero() {
-  const [activeLattice, setActiveLattice] = useState<LatticeSystem>("BCC");
+  const [activeLattice, setActiveLattice] = useState<StageModelType>("MFC");
   const [resetNonce, setResetNonce] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [exploded, setExploded] = useState<boolean>(false);
   const { lang } = useSitePreferences();
   const t = TRANSLATIONS[lang].hero;
 
-  const currentSpec = getLatticeSpec(activeLattice);
+  const isComposite = activeLattice === "MFC";
+  const currentSpec = isComposite
+    ? {
+        id: "MFC" as const,
+        materialExample: t.mfcReadout,
+        packingFactor: "rPET/PP",
+        coordinationNumber: "Nanoclay",
+        accentHex: "#21D4FD",
+      }
+    : getLatticeSpec(activeLattice);
 
   return (
     <section
@@ -88,7 +97,7 @@ export function Hero() {
             </div>
           </motion.div>
 
-          {/* 3D Crystal Lattice Stage */}
+          {/* 3D Materials & Crystal Lattice Stage */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -109,22 +118,25 @@ export function Hero() {
                 }}
               />
 
-              {/* Top-left Lattice System Switcher & Controls */}
+              {/* Top-left Stage Mode Switcher & Controls */}
               <div className="absolute top-4 left-4 z-10 flex flex-wrap items-center gap-2">
                 <div
                   role="group"
-                  aria-label="Crystal lattice unit cell selector"
+                  aria-label="3D material structure selector"
                   className="inline-flex items-center p-1 rounded-md border border-white/[0.1] bg-[#0B0B0E]/85 backdrop-blur-md"
                 >
-                  {LATTICE_SPECS.map((spec) => {
-                    const isSelected = activeLattice === spec.id;
+                  {STAGE_MODES.map((mode) => {
+                    const isSelected = activeLattice === mode;
+                    const specExists =
+                      mode === "MFC" || LATTICE_SPECS.some((s) => s.id === mode);
+                    if (!specExists) return null;
                     return (
                       <button
-                        key={spec.id}
+                        key={mode}
                         type="button"
-                        data-testid={`lattice-btn-${spec.id}`}
+                        data-testid={`lattice-btn-${mode}`}
                         aria-pressed={isSelected}
-                        onClick={() => setActiveLattice(spec.id)}
+                        onClick={() => setActiveLattice(mode)}
                         className={`relative min-h-[28px] min-w-[44px] px-2.5 py-1 rounded text-xs font-mono font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan ${
                           isSelected
                             ? "text-zinc-100"
@@ -142,11 +154,29 @@ export function Hero() {
                             className="pointer-events-none absolute inset-0 rounded bg-white/[0.1] border border-white/[0.16]"
                           />
                         )}
-                        <span className="relative z-10">{spec.id}</span>
+                        <span className="relative z-10">{mode}</span>
                       </button>
                     );
                   })}
                 </div>
+
+                {isComposite && (
+                  <button
+                    type="button"
+                    data-testid="composite-explode-btn"
+                    aria-pressed={exploded}
+                    onClick={() => setExploded((v) => !v)}
+                    aria-label={exploded ? t.collapseLayers : t.explodeLayers}
+                    title={exploded ? t.collapseLayers : t.explodeLayers}
+                    className={`min-h-[36px] min-w-[36px] px-2.5 flex items-center justify-center gap-1.5 rounded-md border backdrop-blur-md text-xs font-mono transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan ${
+                      exploded
+                        ? "border-accent-cyan/50 bg-[#0B0B0E]/90 text-accent-cyan"
+                        : "border-white/[0.1] bg-[#0B0B0E]/85 text-zinc-300 hover:text-white hover:border-white/[0.22]"
+                    }`}
+                  >
+                    <Layers className="w-3.5 h-3.5" />
+                  </button>
+                )}
 
                 <button
                   type="button"
@@ -179,18 +209,46 @@ export function Hero() {
                 data-testid="lattice-spec-readout"
                 className="hidden sm:flex items-center gap-2 absolute top-4 right-4 z-10 px-3 py-1.5 rounded-md border border-white/[0.08] bg-[#0B0B0E]/80 backdrop-blur-md font-mono text-[11px] text-zinc-300"
               >
-                <span>{currentSpec.materialExample}</span>
-                <span className="text-zinc-400">·</span>
-                <span>APF {currentSpec.packingFactor}</span>
-                <span className="text-zinc-400">·</span>
-                <span>CN {currentSpec.coordinationNumber}</span>
+                {isComposite ? (
+                  <span>{t.mfcReadout}</span>
+                ) : (
+                  <>
+                    <span>{currentSpec.materialExample}</span>
+                    <span className="text-zinc-400">·</span>
+                    <span>APF {currentSpec.packingFactor}</span>
+                    <span className="text-zinc-400">·</span>
+                    <span>CN {currentSpec.coordinationNumber}</span>
+                  </>
+                )}
               </div>
+
+              {/* Bottom-left Composite Legend when MFC is active */}
+              {isComposite && (
+                <div
+                  data-testid="mfc-legend"
+                  className="absolute bottom-4 left-4 z-10 flex flex-wrap items-center gap-3 px-3 py-1.5 rounded-md border border-white/[0.08] bg-[#0B0B0E]/80 backdrop-blur-md font-mono text-[11px] text-zinc-300"
+                >
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-zinc-400" />
+                    {t.mfcLegendMatrix}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-accent-cyan" />
+                    {t.mfcLegendFibril}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-accent-amber" />
+                    {t.mfcLegendClay}
+                  </span>
+                </div>
+              )}
 
               {/* 3D Canvas */}
               <CrystalLatticeViewport
                 latticeType={activeLattice}
                 resetNonce={resetNonce}
                 isPaused={isPaused}
+                exploded={exploded}
                 accentHex={currentSpec.accentHex}
               />
             </div>

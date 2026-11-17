@@ -28,11 +28,45 @@ export interface SiteCopy {
     resetCamera: string;
     pauseRotation: string;
     resumeRotation: string;
+    explodeLayers: string;
+    collapseLayers: string;
+    mfcReadout: string;
+    mfcLegendMatrix: string;
+    mfcLegendFibril: string;
+    mfcLegendClay: string;
   };
   research: {
     eyebrow: string;
     title: string;
     subtitle: string;
+    caseStudyCta: string;
+    caseStudy: {
+      badge: string;
+      title: string;
+      problemLabel: string;
+      problem: string;
+      methodLabel: string;
+      method: string;
+      resultLabel: string;
+      result: string;
+      teamLabel: string;
+      team: string;
+      guidanceLabel: string;
+      guidance: string;
+      close: string;
+    };
+    ashby: {
+      eyebrow: string;
+      title: string;
+      xAxis: string;
+      yAxis: string;
+      domains: {
+        id: "sustainability" | "aerospace" | "energy";
+        label: string;
+        material: string;
+        summary: string;
+      }[];
+    };
     projects: ResearchProject[];
   };
   subteams: {
@@ -83,12 +117,66 @@ export const TRANSLATIONS: Record<Lang, SiteCopy> = {
       resetCamera: "Reset 3D lattice camera",
       pauseRotation: "Pause lattice rotation",
       resumeRotation: "Resume lattice rotation",
+      explodeLayers: "Explode composite layers",
+      collapseLayers: "Collapse composite layers",
+      mfcReadout: "rPET/PP · Nanoclay MFC",
+      mfcLegendMatrix: "PP Matrix",
+      mfcLegendFibril: "rPET Microfibrils",
+      mfcLegendClay: "Nanoclay Platelets",
     },
     research: {
       eyebrow: "Research & Focus Areas",
       title: "From Sustainable Composites to Aerospace & Energy",
       subtitle:
         "Anchored by our EELISA Special Award-winning nanoclay rPET/PP composite research and expanding into aerospace, energy, and advanced materials.",
+      caseStudyCta: "Case Study",
+      caseStudy: {
+        badge: "MAT-01 · 4th EELISA Scientific Student Competition · Madrid",
+        title: "Production and Performance Evaluation of Nanoclay Reinforced rPET/PP Microfibrillated Composites",
+        problemLabel: "Challenge",
+        problem:
+          "Recycled PET (rPET) and polypropylene (PP) are thermodynamically immiscible, causing weak interfacial adhesion and degraded mechanical reliability in upcycled polymer blends.",
+        methodLabel: "Approach",
+        method:
+          "In-situ microfibrillated composite (MFC) drawing aligns rPET fibrils inside the PP matrix while intercalated nanoclay platelets reinforce the interface and barrier structure.",
+        resultLabel: "Outcome & Recognition",
+        result:
+          "Awarded the Special Award at the 4th EELISA Scientific Student Competition (21–22 May, Madrid) with İTÜ BAP LÖKAP-E funding support.",
+        teamLabel: "Sustainable Materials Group",
+        team: "Gökberk Gök, Selim Özbek, Cemre Haccacoğlu, Sudenaz Karadeniz, Atahan Akman, Şevval Çapak",
+        guidanceLabel: "Academic Guidance",
+        guidance: "Prof. Dr. M. Reza Nofar, Merve Güçlü & SGPL Team",
+        close: "Close",
+      },
+      ashby: {
+        eyebrow: "Materials Selection Matrix",
+        title: "Conceptual Ashby Positioning",
+        xAxis: "Thermal Stability & Circularity",
+        yAxis: "Specific Strength / Stiffness",
+        domains: [
+          {
+            id: "sustainability",
+            label: "Sustainability",
+            material: "rPET/PP + Nanoclay MFC",
+            summary:
+              "Upcycled polymer matrix reinforced via microfibrillation and nanoclay platelets for circular structural performance.",
+          },
+          {
+            id: "aerospace",
+            label: "Aerospace",
+            material: "Lightweight Alloys & Composites",
+            summary:
+              "High strength-to-weight structural systems engineered for fatigue resistance and extreme-load reliability.",
+          },
+          {
+            id: "energy",
+            label: "Energy",
+            material: "Functional & Thermal Materials",
+            summary:
+              "Materials tailored for clean energy conversion, thermal management, and next-generation storage systems.",
+          },
+        ],
+      },
       projects: [
         {
           id: "eelisa-rpet-pp",
@@ -285,12 +373,66 @@ export const TRANSLATIONS: Record<Lang, SiteCopy> = {
       resetCamera: "3B kafes kamerasını sıfırla",
       pauseRotation: "Kafes dönüşünü duraklat",
       resumeRotation: "Kafes dönüşünü sürdür",
+      explodeLayers: "Kompozit katmanlarını ayır",
+      collapseLayers: "Kompozit katmanlarını birleştir",
+      mfcReadout: "rPET/PP · Nanokil MFC",
+      mfcLegendMatrix: "PP Matris",
+      mfcLegendFibril: "rPET Mikrofibriller",
+      mfcLegendClay: "Nanokil Plakaları",
     },
     research: {
       eyebrow: "Araştırma ve Hedef Alanlar",
       title: "Sürdürülebilir Kompozitlerden Havacılık ve Enerjiye",
       subtitle:
         "Madrid'de EELISA Special Award kazanan nanokil takviyeli rPET/PP kompozit projemizden havacılık, enerji ve ileri malzemelere uzanan Ar-Ge vizyonu.",
+      caseStudyCta: "Vaka İncelemesi",
+      caseStudy: {
+        badge: "MAT-01 · 4th EELISA Scientific Student Competition · Madrid",
+        title: "Nanokil Takviyeli rPET/PP Mikrofibrillenmiş Kompozitlerin Üretimi ve Performans Değerlendirmesi",
+        problemLabel: "Mühendislik Problemi",
+        problem:
+          "Geri dönüştürülmüş PET (rPET) ve polipropilen (PP) termodinamik olarak karışmaz; bu durum geri kazanılmış polimer harmanlarında zayıf arayüzey bağına ve mekanik performans kaybına yol açar.",
+        methodLabel: "Yöntem",
+        method:
+          "Yerinde mikrofibrillenmiş kompozit (MFC) çekme süreci rPET fibrillerini PP matris içinde hizalarken, nanokil plakaları arayüzeyi ve bariyer yapısını güçlendirir.",
+        resultLabel: "Sonuç ve Takdir",
+        result:
+          "İTÜ BAP LÖKAP-E desteğiyle katılınan 4th EELISA Scientific Student Competition'da (21–22 Mayıs, Madrid) Special Award kazanıldı.",
+        teamLabel: "Sürdürülebilir Malzemeler Grubu",
+        team: "Gökberk Gök, Selim Özbek, Cemre Haccacoğlu, Sudenaz Karadeniz, Atahan Akman, Şevval Çapak",
+        guidanceLabel: "Akademik Rehberlik",
+        guidance: "Prof. Dr. M. Reza Nofar, Merve Güçlü ve SGPL Ekibi",
+        close: "Kapat",
+      },
+      ashby: {
+        eyebrow: "Malzeme Seçim Matrisi",
+        title: "Kavramsal Ashby Konumlandırması",
+        xAxis: "Isıl Kararlılık ve Döngüsellik",
+        yAxis: "Özgül Mukavemet / Rijitlik",
+        domains: [
+          {
+            id: "sustainability",
+            label: "Sürdürülebilirlik",
+            material: "rPET/PP + Nanokil MFC",
+            summary:
+              "Mikrofibrilasyon ve nanokil plakaları ile güçlendirilmiş, döngüsel yapısal performans sunan geri dönüştürülmüş polimer matris.",
+          },
+          {
+            id: "aerospace",
+            label: "Havacılık",
+            material: "Hafif Alaşımlar ve Kompozitler",
+            summary:
+              "Yorulma dayanımı ve yüksek yük altında güvenilirlik için tasarlanan yüksek mukavemet/ağırlık oranlı sistemler.",
+          },
+          {
+            id: "energy",
+            label: "Enerji",
+            material: "Fonksiyonel ve Isıl Malzemeler",
+            summary:
+              "Temiz enerji dönüşümü, ısıl yönetim ve yeni nesil depolama sistemleri için geliştirilen malzemeler.",
+          },
+        ],
+      },
       projects: [
         {
           id: "eelisa-rpet-pp",

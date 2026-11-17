@@ -1,14 +1,17 @@
 "use client";
 
 import React from "react";
-import type { LatticeSystem } from "@/data/materials-data";
 import { CrystalLatticeCanvas } from "@/components/crystal-lattice-canvas";
-import { CrystalLatticeModel } from "@/components/crystal-lattice-model";
+import {
+  CrystalLatticeModel,
+  type StageModelType,
+} from "@/components/crystal-lattice-model";
 
 export interface CrystalLatticeViewportProps {
-  latticeType: LatticeSystem;
+  latticeType: StageModelType;
   resetNonce: number;
   isPaused: boolean;
+  exploded?: boolean;
   accentHex: string;
 }
 
@@ -16,6 +19,7 @@ export default function CrystalLatticeViewport({
   latticeType,
   resetNonce,
   isPaused,
+  exploded = false,
   accentHex,
 }: CrystalLatticeViewportProps) {
   return (
@@ -23,6 +27,7 @@ export default function CrystalLatticeViewport({
       <CrystalLatticeModel
         latticeType={latticeType}
         isPaused={isPaused}
+        exploded={exploded}
         accentHex={accentHex}
       />
     </CrystalLatticeCanvas>

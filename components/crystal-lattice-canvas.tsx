@@ -5,10 +5,10 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
-import type { LatticeSystem } from "@/data/materials-data";
+import type { StageModelType } from "@/components/crystal-lattice-model";
 
 export interface CrystalLatticeCanvasProps {
-  latticeType: LatticeSystem;
+  latticeType: StageModelType;
   onResetNonce?: number;
   className?: string;
   children?: React.ReactNode;
