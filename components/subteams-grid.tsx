@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { useSitePreferences } from "@/components/site-preferences";
 import { TRANSLATIONS } from "@/data/i18n";
 
+const REVEAL_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
 export function SubteamsGrid() {
   const { lang } = useSitePreferences();
   const t = TRANSLATIONS[lang].subteams;
@@ -17,10 +19,10 @@ export function SubteamsGrid() {
     >
       <div className="max-w-6xl mx-auto px-6 lg:px-8 w-full">
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.45, ease: "easeOut" }}
+          transition={{ duration: 0.52, ease: REVEAL_EASE }}
           className="max-w-2xl mb-14"
         >
           <p className="font-mono text-xs tracking-[0.14em] uppercase text-zinc-400 mb-3">
@@ -39,10 +41,18 @@ export function SubteamsGrid() {
             <motion.article
               key={division.id}
               data-testid={`subteam-card-${division.id}`}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.4, delay: idx * 0.04, ease: "easeOut" }}
+              transition={{
+                duration: 0.48,
+                delay: idx * 0.05,
+                ease: REVEAL_EASE,
+              }}
+              whileHover={{
+                y: -3,
+                transition: { duration: 0.2, delay: 0, ease: REVEAL_EASE },
+              }}
               className={`rounded-xl border border-white/[0.08] bg-surface p-6 sm:p-8 hover:border-white/[0.18] transition-colors ${division.colSpan ?? ""}`}
             >
               <div className="font-mono text-xs uppercase tracking-wider text-accent-cyan mb-3">

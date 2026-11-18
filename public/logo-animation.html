@@ -436,8 +436,8 @@
               fill-rule="evenodd"
             />
             <g id="electron-0" data-electron="outer-steep" transform="translate(32.5 54.1)">
-              <circle r="10.4" fill="#21D4FD" opacity="0.24" />
-              <circle r="5.2" fill="#21D4FD" />
+              <circle r="10.4" fill="currentColor" opacity="0.22" />
+              <circle r="5.2" fill="currentColor" />
             </g>
           </g>
           <g id="orbit-1" class="orbit-ring" data-orbit-ring="wide-horizontal" transform="translate(128 128) rotate(18)">
@@ -447,8 +447,8 @@
               fill-rule="evenodd"
             />
             <g id="electron-1" data-electron="wide-horizontal" transform="translate(-79.6 12.6)">
-              <circle r="9.6" fill="#AF52DE" opacity="0.24" />
-              <circle r="4.8" fill="#AF52DE" />
+              <circle r="9.6" fill="currentColor" opacity="0.22" />
+              <circle r="4.8" fill="currentColor" />
             </g>
           </g>
           <g id="orbit-2" class="orbit-ring" data-orbit-ring="inner-vertical" transform="translate(128 128) rotate(-1)">
@@ -458,8 +458,8 @@
               fill-rule="evenodd"
             />
             <g id="electron-2" data-electron="inner-vertical" transform="translate(-10.4 -49.2)">
-              <circle r="8.8" fill="#F59E0B" opacity="0.24" />
-              <circle r="4.4" fill="#F59E0B" />
+              <circle r="8.8" fill="currentColor" opacity="0.22" />
+              <circle r="4.4" fill="currentColor" />
             </g>
           </g>
           <g id="orbit-3" class="orbit-ring" data-orbit-ring="inner-diagonal" transform="translate(128 128) rotate(-22)">
@@ -469,8 +469,8 @@
               fill-rule="evenodd"
             />
             <g id="electron-3" data-electron="inner-diagonal" transform="translate(44.6 -14.2)">
-              <circle r="8.8" fill="#21D4FD" opacity="0.24" />
-              <circle r="4.4" fill="#21D4FD" />
+              <circle r="8.8" fill="currentColor" opacity="0.22" />
+              <circle r="4.4" fill="currentColor" />
             </g>
           </g>
           <g id="nucleus-core" data-orbit-core="nucleus" transform="translate(128 128) scale(1)">
@@ -543,7 +543,8 @@
         <div class="speed-presets" role="group" aria-label="Speed presets">
           <button type="button" class="speed-btn mono" data-speed="0.25">0.25×</button>
           <button type="button" class="speed-btn mono" data-speed="0.5">0.5×</button>
-          <button type="button" class="speed-btn mono is-active" data-speed="1">1×</button>
+          <button type="button" class="speed-btn mono is-active" data-speed="0.7">0.7×</button>
+          <button type="button" class="speed-btn mono" data-speed="1">1×</button>
           <button type="button" class="speed-btn mono" data-speed="2">2×</button>
           <button type="button" class="speed-btn mono" data-speed="4">4×</button>
         </div>
@@ -555,10 +556,10 @@
             min="0.1"
             max="4"
             step="0.05"
-            value="1"
+            value="0.7"
             aria-label="Animation speed multiplier"
           />
-          <span id="speed-value" class="speed-readout mono">1.00×</span>
+          <span id="speed-value" class="speed-readout mono">0.70×</span>
         </div>
       </div>
     </section>
@@ -595,7 +596,7 @@
           : null;
 
       let isPlaying = !(reducedMotionQuery && reducedMotionQuery.matches);
-      let speed = 1;
+      let speed = 0.7;
       let phases = ORBIT_PARAMS.map((o) => o.init);
       let elapsed = 0;
       let lastTimestamp = null;
@@ -637,7 +638,7 @@
       }
 
       function setSpeed(nextSpeed) {
-        speed = Math.min(4, Math.max(0.1, Number(nextSpeed) || 1));
+        speed = Math.min(4, Math.max(0.1, Number(nextSpeed) || 0.7));
         speedSlider.value = String(speed);
         speedValue.textContent = `${speed.toFixed(2)}×`;
         for (const btn of speedBtns) {
@@ -721,7 +722,7 @@
         });
       }
 
-      setSpeed(1);
+      setSpeed(0.7);
       renderFrame();
       syncTransportUI();
       startLoop();

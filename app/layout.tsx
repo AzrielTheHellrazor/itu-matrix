@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { MotionProvider } from "@/components/motion-provider";
+import { IntroProvider, IntroSplashOverlay } from "@/components/intro-splash";
 import { SitePreferencesProvider } from "@/components/site-preferences";
 import { Navbar } from "@/components/navbar";
 import { MinimalFooter } from "@/components/minimal-footer";
@@ -90,11 +91,14 @@ export default function RootLayout({
         <div className="flex min-h-screen flex-col w-full overflow-x-clip">
           <SitePreferencesProvider>
             <MotionProvider>
-              <Navbar />
-              <main className="flex-1 w-full flex flex-col">
-                {children}
-              </main>
-              <MinimalFooter />
+              <IntroProvider>
+                <IntroSplashOverlay />
+                <Navbar />
+                <main className="flex-1 w-full flex flex-col">
+                  {children}
+                </main>
+                <MinimalFooter />
+              </IntroProvider>
             </MotionProvider>
           </SitePreferencesProvider>
         </div>

@@ -14,6 +14,8 @@ const ACCENT_DOT: Record<ResearchProject["accent"], string> = {
   amber: "bg-accent-amber",
 };
 
+const REVEAL_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
 export function MaterialsShowcase() {
   const [isCaseStudyOpen, setIsCaseStudyOpen] = useState(false);
   const { lang } = useSitePreferences();
@@ -36,10 +38,10 @@ export function MaterialsShowcase() {
     >
       <div className="max-w-6xl mx-auto px-6 lg:px-8 w-full">
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.45, ease: "easeOut" }}
+          transition={{ duration: 0.52, ease: REVEAL_EASE }}
           className="max-w-2xl mb-14"
         >
           <p className="font-mono text-xs tracking-[0.14em] uppercase text-zinc-400 mb-3">
@@ -60,15 +62,18 @@ export function MaterialsShowcase() {
               <motion.article
                 key={project.id}
                 data-testid={`research-card-${project.code}`}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.15 }}
                 transition={{
-                  duration: 0.4,
-                  delay: idx * 0.05,
-                  ease: "easeOut",
+                  duration: 0.48,
+                  delay: idx * 0.06,
+                  ease: REVEAL_EASE,
                 }}
-                whileHover={{ y: -2 }}
+                whileHover={{
+                  y: -3,
+                  transition: { duration: 0.2, delay: 0, ease: REVEAL_EASE },
+                }}
                 className="rounded-xl border border-white/[0.08] bg-surface p-6 sm:p-8 hover:border-white/[0.18] transition-colors flex flex-col justify-between"
               >
                 <div>
@@ -126,7 +131,14 @@ export function MaterialsShowcase() {
         </div>
 
         {/* Conceptual Ashby Materials Selection Matrix */}
-        <AshbyMatrix />
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.52, delay: 0.1, ease: REVEAL_EASE }}
+        >
+          <AshbyMatrix />
+        </motion.div>
       </div>
 
       {/* MAT-01 EELISA Case Study Modal */}
@@ -137,7 +149,7 @@ export function MaterialsShowcase() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.2, ease: REVEAL_EASE }}
             onClick={() => setIsCaseStudyOpen(false)}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
           >
@@ -149,7 +161,7 @@ export function MaterialsShowcase() {
               initial={{ opacity: 0, scale: 0.97, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.97, y: 8 }}
-              transition={{ duration: 0.22, ease: "easeOut" }}
+              transition={{ duration: 0.24, ease: REVEAL_EASE }}
               onClick={(e) => e.stopPropagation()}
               className="w-full max-w-2xl rounded-xl border border-white/[0.16] bg-surface p-6 sm:p-8 max-h-[90vh] overflow-y-auto"
             >

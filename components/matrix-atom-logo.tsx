@@ -12,7 +12,6 @@ interface OrbitalRingSpec {
   ry: number;
   initialPhaseDeg: number;
   speedDegPerSec: number;
-  electronColor: string;
   electronRadius: number;
   path: string;
 }
@@ -31,7 +30,6 @@ const ORBITAL_RINGS: readonly OrbitalRingSpec[] = [
     ry: 115.0,
     initialPhaseDeg: 28,
     speedDegPerSec: 95,
-    electronColor: "#21D4FD",
     electronRadius: 5.2,
     path: "M 37.9 0 A 37.9 117.2 0 1 1 -37.9 0 A 37.9 117.2 0 1 1 37.9 0 Z M 35.5 0.15 A 34.1 112.8 0 1 0 -32.7 0.15 A 34.1 112.8 0 1 0 35.5 0.15 Z",
   },
@@ -44,7 +42,6 @@ const ORBITAL_RINGS: readonly OrbitalRingSpec[] = [
     ry: 22.6,
     initialPhaseDeg: 145,
     speedDegPerSec: -120,
-    electronColor: "#AF52DE",
     electronRadius: 4.8,
     path: "M 99.1 0 A 99.1 24.15 0 1 1 -99.1 0 A 99.1 24.15 0 1 1 99.1 0 Z M 96.35 -0.75 A 95.9 21.05 0 1 0 -95.45 -0.75 A 95.9 21.05 0 1 0 96.35 -0.75 Z",
   },
@@ -57,7 +54,6 @@ const ORBITAL_RINGS: readonly OrbitalRingSpec[] = [
     ry: 60.4,
     initialPhaseDeg: 235,
     speedDegPerSec: 150,
-    electronColor: "#F59E0B",
     electronRadius: 4.4,
     path: "M 19.85 0 A 19.85 61.65 0 1 1 -19.85 0 A 19.85 61.65 0 1 1 19.85 0 Z M 17.8 0.45 A 17.35 59.15 0 1 0 -16.9 0.45 A 17.35 59.15 0 1 0 17.8 0.45 Z",
   },
@@ -70,7 +66,6 @@ const ORBITAL_RINGS: readonly OrbitalRingSpec[] = [
     ry: 19.7,
     initialPhaseDeg: 315,
     speedDegPerSec: -135,
-    electronColor: "#21D4FD",
     electronRadius: 4.4,
     path: "M 64.5 0 A 64.5 20.9 0 1 1 -64.5 0 A 64.5 20.9 0 1 1 64.5 0 Z M 61.85 -0.5 A 62.1 18.5 0 1 0 -62.35 -0.5 A 62.1 18.5 0 1 0 61.85 -0.5 Z",
   },
@@ -102,7 +97,7 @@ function getElectronCoords(ring: OrbitalRingSpec, phaseDeg: number) {
  */
 export function MatrixAtomLogo({
   animated = true,
-  speed = 1,
+  speed = 0.7,
   className = "",
   width,
   height,
@@ -224,10 +219,10 @@ export function MatrixAtomLogo({
             >
               <circle
                 r={ring.electronRadius * 2}
-                fill={ring.electronColor}
+                fill="currentColor"
                 opacity="0.22"
               />
-              <circle r={ring.electronRadius} fill={ring.electronColor} />
+              <circle r={ring.electronRadius} fill="currentColor" />
             </g>
           </g>
         );

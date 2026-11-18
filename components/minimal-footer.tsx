@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { useSitePreferences } from "@/components/site-preferences";
 import { TRANSLATIONS } from "@/data/i18n";
 
+const REVEAL_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
 export function MinimalFooter() {
   const { lang } = useSitePreferences();
   const t = TRANSLATIONS[lang].footer;
@@ -17,10 +19,10 @@ export function MinimalFooter() {
     >
       <div className="max-w-6xl mx-auto px-6 lg:px-8 w-full">
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
+          transition={{ duration: 0.5, ease: REVEAL_EASE }}
           className="grid grid-cols-1 lg:grid-cols-12 gap-10 pb-12 border-b border-white/[0.08]"
         >
           <div className="lg:col-span-12">
@@ -36,10 +38,16 @@ export function MinimalFooter() {
           </div>
         </motion.div>
 
-        <div className="pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono text-zinc-400">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.46, delay: 0.08, ease: REVEAL_EASE }}
+          className="pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono text-zinc-400"
+        >
           <span>{t.brandLine}</span>
           <span>{t.campus}</span>
-        </div>
+        </motion.div>
       </div>
     </footer>
   );

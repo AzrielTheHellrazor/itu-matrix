@@ -3,8 +3,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Menu, Moon, Sun, X } from "lucide-react";
+import { useIntroSequence } from "@/components/intro-splash";
 import { useSitePreferences } from "@/components/site-preferences";
 import { TRANSLATIONS } from "@/data/i18n";
 
@@ -16,8 +17,11 @@ export function Navbar({ className = "" }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeHref, setActiveHref] = useState<string>("#research");
   const pendingScrollIdRef = useRef<string | null>(null);
+  const { isRevealed } = useIntroSequence();
+  const prefersReducedMotion = useReducedMotion();
   const { lang, setLang, theme, toggleTheme } = useSitePreferences();
   const t = TRANSLATIONS[lang].nav;
+  const shouldRevealNav = isRevealed || Boolean(prefersReducedMotion);
 
   const navLinks = [
     { href: "#research", label: t.research },
@@ -125,8 +129,18 @@ export function Navbar({ className = "" }: NavbarProps) {
   );
 
   return (
-    <header
+    <motion.header
       data-testid="matrix-navbar"
+      initial={false}
+      animate={{
+        y: shouldRevealNav ? 0 : -12,
+        opacity: shouldRevealNav ? 1 : 0,
+      }}
+      transition={
+        prefersReducedMotion
+          ? { duration: 0 }
+          : { duration: 0.48, ease: [0.16, 1, 0.3, 1] }
+      }
       className={`sticky top-0 z-50 w-full border-b border-white/[0.08] bg-[#0B0B0E]/85 backdrop-blur-md ${className}`}
     >
       <div className="max-w-6xl mx-auto px-6 lg:px-8 min-h-16 py-2 flex items-center justify-between gap-4">
@@ -228,10 +242,10 @@ export function Navbar({ className = "" }: NavbarProps) {
             key="mobile-nav-drawer"
             id="mobile-nav-drawer"
             data-testid="mobile-nav-drawer"
-            initial={{ opacity: 0, height: 0, y: -6 }}
-            animate={{ opacity: 1, height: "auto", y: 0 }}
-            exit={{ opacity: 0, height: 0, y: -6 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
             className="md:hidden absolute inset-x-0 top-full overflow-hidden border-b border-white/[0.08] bg-[#0B0B0E]/95 backdrop-blur-xl px-6 pt-3 pb-6 space-y-2 z-50"
           >
             <div className="grid grid-cols-1 gap-1.5">
@@ -256,6 +270,6 @@ export function Navbar({ className = "" }: NavbarProps) {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </motion.header>
   );
 }

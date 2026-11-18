@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Layers, Pause, Play, RotateCcw } from "lucide-react";
+import { useIntroSequence } from "@/components/intro-splash";
 import { useSitePreferences } from "@/components/site-preferences";
 import { TRANSLATIONS } from "@/data/i18n";
 import { LATTICE_SPECS, getLatticeSpec } from "@/data/materials-data";
@@ -28,14 +29,18 @@ const CrystalLatticeViewport = dynamic(
 );
 
 const STAGE_MODES: StageModelType[] = ["MFC", "BCC", "FCC", "HCP"];
+const EDITORIAL_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 export function Hero() {
   const [activeLattice, setActiveLattice] = useState<StageModelType>("MFC");
   const [resetNonce, setResetNonce] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [exploded, setExploded] = useState<boolean>(false);
+  const { isRevealed } = useIntroSequence();
+  const prefersReducedMotion = useReducedMotion();
   const { lang } = useSitePreferences();
   const t = TRANSLATIONS[lang].hero;
+  const shouldRevealHero = isRevealed || Boolean(prefersReducedMotion);
 
   const isComposite = activeLattice === "MFC";
   const currentSpec = isComposite
@@ -57,29 +62,68 @@ export function Hero() {
       <div className="max-w-6xl mx-auto px-6 lg:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           {/* Editorial Copy Column */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
-            className="lg:col-span-5 max-w-full break-words"
-          >
-            <div className="inline-flex items-center gap-2 font-mono text-xs tracking-[0.14em] uppercase text-zinc-400 mb-6">
+          <div className="lg:col-span-5 max-w-full break-words">
+            <motion.div
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
+              animate={
+                shouldRevealHero ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }
+              }
+              transition={
+                prefersReducedMotion
+                  ? { duration: 0 }
+                  : { duration: 0.52, delay: 0.04, ease: EDITORIAL_EASE }
+              }
+              className="inline-flex items-center gap-2 font-mono text-xs tracking-[0.14em] uppercase text-zinc-400 mb-6"
+            >
               <span
                 aria-hidden="true"
                 className="h-1.5 w-1.5 rounded-full bg-accent-cyan"
               />
               <span>{t.eyebrow}</span>
-            </div>
+            </motion.div>
 
-            <h1 className="text-4xl sm:text-5xl font-bold tracking-[-0.03em] leading-[1.08] text-zinc-100 mb-5">
+            <motion.h1
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
+              animate={
+                shouldRevealHero ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }
+              }
+              transition={
+                prefersReducedMotion
+                  ? { duration: 0 }
+                  : { duration: 0.52, delay: 0.1, ease: EDITORIAL_EASE }
+              }
+              className="text-4xl sm:text-5xl font-bold tracking-[-0.03em] leading-[1.08] text-zinc-100 mb-5"
+            >
               {t.headline}
-            </h1>
+            </motion.h1>
 
-            <p className="text-base text-zinc-400 leading-relaxed max-w-md mb-8">
+            <motion.p
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
+              animate={
+                shouldRevealHero ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }
+              }
+              transition={
+                prefersReducedMotion
+                  ? { duration: 0 }
+                  : { duration: 0.52, delay: 0.16, ease: EDITORIAL_EASE }
+              }
+              className="text-base text-zinc-400 leading-relaxed max-w-md mb-8"
+            >
               {t.subcopy}
-            </p>
+            </motion.p>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <motion.div
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
+              animate={
+                shouldRevealHero ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }
+              }
+              transition={
+                prefersReducedMotion
+                  ? { duration: 0 }
+                  : { duration: 0.52, delay: 0.22, ease: EDITORIAL_EASE }
+              }
+              className="flex flex-wrap items-center gap-3"
+            >
               <a
                 href="#research"
                 data-testid="hero-cta-research"
@@ -94,14 +138,26 @@ export function Hero() {
               >
                 {t.ctaSubteams}
               </a>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
 
           {/* 3D Materials & Crystal Lattice Stage */}
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
+            initial={
+              prefersReducedMotion
+                ? false
+                : { opacity: 0, y: 18, scale: 0.97 }
+            }
+            animate={
+              shouldRevealHero
+                ? { opacity: 1, y: 0, scale: 1 }
+                : { opacity: 0, y: 18, scale: 0.97 }
+            }
+            transition={
+              prefersReducedMotion
+                ? { duration: 0 }
+                : { duration: 0.58, delay: 0.14, ease: EDITORIAL_EASE }
+            }
             className="lg:col-span-7"
           >
             <div
