@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, Moon, Sun, X } from "lucide-react";
@@ -142,25 +143,21 @@ export function Navbar({ className = "" }: NavbarProps) {
           className="flex items-center gap-3 group shrink-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
         >
           <span
-            aria-hidden="true"
-            className="h-8 w-8 rounded-md border border-white/[0.14] bg-surface text-zinc-100 flex items-center justify-center"
+            className="h-9 w-9 rounded-md border border-white/[0.14] bg-surface flex items-center justify-center p-1"
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M2.5 13V3L8 8.5L13.5 3V13"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="square"
-                strokeLinejoin="miter"
-              />
-              <circle cx="8" cy="8.5" r="1.5" fill="#21D4FD" />
-            </svg>
+            <Image
+              src={
+                theme === "dark"
+                  ? "/itu-matrix-logo-light.png"
+                  : "/itu-matrix-logo-dark.png"
+              }
+              alt="ITU MATRIX"
+              width={28}
+              height={28}
+              unoptimized
+              data-testid="navbar-brand-logo"
+              className="h-7 w-7 object-contain"
+            />
           </span>
           <span className="flex flex-col">
             <span className="font-mono font-semibold tracking-wider text-sm text-zinc-100 group-hover:text-white transition-colors whitespace-nowrap">
