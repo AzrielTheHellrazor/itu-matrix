@@ -429,40 +429,48 @@
           role="img"
           aria-label="ITU Matrix animated orbital atom logo"
         >
-          <g id="orbit-0" class="orbit-ring" data-orbit-ring="outer-steep" transform="rotate(0 128 128)">
-            <g transform="translate(128 128) rotate(22)">
-              <path
-                d="M 37.9 0 A 37.9 117.2 0 1 1 -37.9 0 A 37.9 117.2 0 1 1 37.9 0 Z M 35.5 0.15 A 34.1 112.8 0 1 0 -32.7 0.15 A 34.1 112.8 0 1 0 35.5 0.15 Z"
-                fill="currentColor"
-                fill-rule="evenodd"
-              />
+          <g id="orbit-0" class="orbit-ring" data-orbit-ring="outer-steep" transform="translate(128 128) rotate(22)">
+            <path
+              d="M 37.9 0 A 37.9 117.2 0 1 1 -37.9 0 A 37.9 117.2 0 1 1 37.9 0 Z M 35.5 0.15 A 34.1 112.8 0 1 0 -32.7 0.15 A 34.1 112.8 0 1 0 35.5 0.15 Z"
+              fill="currentColor"
+              fill-rule="evenodd"
+            />
+            <g id="electron-0" data-electron="outer-steep" transform="translate(32.5 54.1)">
+              <circle r="10.4" fill="#21D4FD" opacity="0.24" />
+              <circle r="5.2" fill="#21D4FD" />
             </g>
           </g>
-          <g id="orbit-1" class="orbit-ring" data-orbit-ring="wide-horizontal" transform="rotate(0 128 128)">
-            <g transform="translate(128 128) rotate(18)">
-              <path
-                d="M 99.1 0 A 99.1 24.15 0 1 1 -99.1 0 A 99.1 24.15 0 1 1 99.1 0 Z M 96.35 -0.75 A 95.9 21.05 0 1 0 -95.45 -0.75 A 95.9 21.05 0 1 0 96.35 -0.75 Z"
-                fill="currentColor"
-                fill-rule="evenodd"
-              />
+          <g id="orbit-1" class="orbit-ring" data-orbit-ring="wide-horizontal" transform="translate(128 128) rotate(18)">
+            <path
+              d="M 99.1 0 A 99.1 24.15 0 1 1 -99.1 0 A 99.1 24.15 0 1 1 99.1 0 Z M 96.35 -0.75 A 95.9 21.05 0 1 0 -95.45 -0.75 A 95.9 21.05 0 1 0 96.35 -0.75 Z"
+              fill="currentColor"
+              fill-rule="evenodd"
+            />
+            <g id="electron-1" data-electron="wide-horizontal" transform="translate(-79.6 12.6)">
+              <circle r="9.6" fill="#AF52DE" opacity="0.24" />
+              <circle r="4.8" fill="#AF52DE" />
             </g>
           </g>
-          <g id="orbit-2" class="orbit-ring" data-orbit-ring="inner-vertical" transform="rotate(0 128 128)">
-            <g transform="translate(128 128) rotate(-1)">
-              <path
-                d="M 19.85 0 A 19.85 61.65 0 1 1 -19.85 0 A 19.85 61.65 0 1 1 19.85 0 Z M 17.8 0.45 A 17.35 59.15 0 1 0 -16.9 0.45 A 17.35 59.15 0 1 0 17.8 0.45 Z"
-                fill="currentColor"
-                fill-rule="evenodd"
-              />
+          <g id="orbit-2" class="orbit-ring" data-orbit-ring="inner-vertical" transform="translate(128 128) rotate(-1)">
+            <path
+              d="M 19.85 0 A 19.85 61.65 0 1 1 -19.85 0 A 19.85 61.65 0 1 1 19.85 0 Z M 17.8 0.45 A 17.35 59.15 0 1 0 -16.9 0.45 A 17.35 59.15 0 1 0 17.8 0.45 Z"
+              fill="currentColor"
+              fill-rule="evenodd"
+            />
+            <g id="electron-2" data-electron="inner-vertical" transform="translate(-10.4 -49.2)">
+              <circle r="8.8" fill="#F59E0B" opacity="0.24" />
+              <circle r="4.4" fill="#F59E0B" />
             </g>
           </g>
-          <g id="orbit-3" class="orbit-ring" data-orbit-ring="inner-diagonal" transform="rotate(0 128 128)">
-            <g transform="translate(128 128) rotate(-22)">
-              <path
-                d="M 64.5 0 A 64.5 20.9 0 1 1 -64.5 0 A 64.5 20.9 0 1 1 64.5 0 Z M 61.85 -0.5 A 62.1 18.5 0 1 0 -62.35 -0.5 A 62.1 18.5 0 1 0 61.85 -0.5 Z"
-                fill="currentColor"
-                fill-rule="evenodd"
-              />
+          <g id="orbit-3" class="orbit-ring" data-orbit-ring="inner-diagonal" transform="translate(128 128) rotate(-22)">
+            <path
+              d="M 64.5 0 A 64.5 20.9 0 1 1 -64.5 0 A 64.5 20.9 0 1 1 64.5 0 Z M 61.85 -0.5 A 62.1 18.5 0 1 0 -62.35 -0.5 A 62.1 18.5 0 1 0 61.85 -0.5 Z"
+              fill="currentColor"
+              fill-rule="evenodd"
+            />
+            <g id="electron-3" data-electron="inner-diagonal" transform="translate(44.6 -14.2)">
+              <circle r="8.8" fill="#21D4FD" opacity="0.24" />
+              <circle r="4.4" fill="#21D4FD" />
             </g>
           </g>
           <g id="nucleus-core" data-orbit-core="nucleus" transform="translate(128 128) scale(1)">
@@ -558,8 +566,13 @@
 
   <script>
     (() => {
-      const SPEEDS_DEG_PER_SEC = [15, -20, 27, -23];
-      const rings = [0, 1, 2, 3].map((i) => document.getElementById(`orbit-${i}`));
+      const ORBIT_PARAMS = [
+        { cx: 0.7, cy: 0.075, rx: 36.0, ry: 115.0, init: 28, speed: 95 },
+        { cx: 0.225, cy: -0.375, rx: 97.5, ry: 22.6, init: 145, speed: -120 },
+        { cx: 0.225, cy: 0.225, rx: 18.6, ry: 60.4, init: 235, speed: 150 },
+        { cx: -0.125, cy: -0.25, rx: 63.3, ry: 19.7, init: 315, speed: -135 },
+      ];
+      const electrons = [0, 1, 2, 3].map((i) => document.getElementById(`electron-${i}`));
       const core = document.getElementById("nucleus-core");
       const angleReadout = document.getElementById("angle-readout");
       const statusPill = document.getElementById("status-pill");
@@ -583,16 +596,20 @@
 
       let isPlaying = !(reducedMotionQuery && reducedMotionQuery.matches);
       let speed = 1;
-      let angles = [0, 0, 0, 0];
+      let phases = ORBIT_PARAMS.map((o) => o.init);
       let elapsed = 0;
       let lastTimestamp = null;
       let rafId = 0;
 
       function renderFrame() {
-        for (let i = 0; i < rings.length; i++) {
-          rings[i].setAttribute(
+        for (let i = 0; i < ORBIT_PARAMS.length; i++) {
+          const p = ORBIT_PARAMS[i];
+          const rad = (phases[i] * Math.PI) / 180;
+          const x = p.cx + p.rx * Math.cos(rad);
+          const y = p.cy + p.ry * Math.sin(rad);
+          electrons[i].setAttribute(
             "transform",
-            `rotate(${angles[i].toFixed(2)} 128 128)`
+            `translate(${x.toFixed(2)} ${y.toFixed(2)})`
           );
         }
         const pulseScale = 1 + 0.055 * Math.sin(elapsed * ((2 * Math.PI) / 3.6));
@@ -600,8 +617,8 @@
           "transform",
           `translate(128 128) scale(${pulseScale.toFixed(4)})`
         );
-        angleReadout.textContent = angles
-          .map((deg, idx) => `R${idx + 1} ${deg >= 0 ? "+" : ""}${deg.toFixed(1)}°`)
+        angleReadout.textContent = phases
+          .map((deg, idx) => `e${idx + 1} ${deg.toFixed(0)}°`)
           .join(" · ");
       }
 
@@ -642,8 +659,8 @@
         lastTimestamp = timestamp;
         elapsed += dtSec * speed;
 
-        for (let i = 0; i < angles.length; i++) {
-          angles[i] = (angles[i] + SPEEDS_DEG_PER_SEC[i] * speed * dtSec) % 360;
+        for (let i = 0; i < phases.length; i++) {
+          phases[i] = (phases[i] + ORBIT_PARAMS[i].speed * speed * dtSec + 360) % 360;
         }
         renderFrame();
         rafId = window.requestAnimationFrame(tick);
@@ -664,7 +681,7 @@
       });
 
       resetBtn.addEventListener("click", () => {
-        angles = [0, 0, 0, 0];
+        phases = ORBIT_PARAMS.map((o) => o.init);
         elapsed = 0;
         lastTimestamp = null;
         renderFrame();
